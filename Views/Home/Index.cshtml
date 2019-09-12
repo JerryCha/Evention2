@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Home Page is under development</h1>
+    <p class="lead">Of course, the content it should include is also considering.</p>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <h2>Quick link for debugging.</h2>
+        <p>@Html.ActionLink("To Event Home", "Index", "Event", new { }, new { @class = "btn btn-dark" })</p>
+        <p>@Html.ActionLink("To Account Manage", "Index", "Manage", new { }, new { @class = "btn btn-dark" })</p>
+        <p>@Html.ActionLink("To Error Page", "Error", "Home", new { }, new { @class = "btn btn-warning" })</p>
+    </div>
+</div>
