@@ -21,7 +21,7 @@ namespace Evention2.Models
         public string Email { get; set; }
         public System.DateTime Start_date { get; set; }
         public System.DateTime End_date { get; set; }
-        public int AccountId { get; set; }
+        public string OwnerId { get; set; }
         public string PosterImg { get; set; }
     }
 }

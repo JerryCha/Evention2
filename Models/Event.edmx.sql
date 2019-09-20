@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 09/03/2019 20:25:51
+-- Date Created: 09/20/2019 15:22:38
 -- Generated from EDMX file: C:\Users\JerryCha\source\repos\Evention2\Models\Event.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [event_db];
+USE [aspnet-Evention2-20190903080703];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -39,7 +39,7 @@ CREATE TABLE [dbo].[Events] (
     [Email] nvarchar(max)  NULL,
     [Start_date] datetime  NOT NULL,
     [End_date] datetime  NOT NULL,
-    [AccountId] int  NOT NULL,
+    [OwnerId] nvarchar(max)  NOT NULL,
     [PosterImg] nvarchar(max)  NOT NULL
 );
 GO

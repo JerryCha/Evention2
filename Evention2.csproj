@@ -204,6 +204,10 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\aspnet-Evention2-20190903080703.mdf" />
+    <Content Include="App_Data\aspnet-Evention2-20190903080703_log.ldf">
+      <DependentUpon>aspnet-Evention2-20190903080703.mdf</DependentUpon>
+    </Content>
     <Content Include="App_Data\event_db.mdf" />
     <Content Include="App_Data\event_db_log.ldf">
       <DependentUpon>event_db.mdf</DependentUpon>
@@ -327,7 +331,9 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Event\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
