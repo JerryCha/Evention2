@@ -13,7 +13,7 @@ namespace Evention2.Controllers
 {
     public class EventController : Controller
     {
-        private EventContainer db = new EventContainer();
+        private Entity db = new Entity();
 
 
         // GET: Event
