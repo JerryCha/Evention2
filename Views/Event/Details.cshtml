@@ -1,83 +1,95 @@
-﻿@model Evention2.Models.Event
+﻿@model Evention2.Models.EventDetailViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = Model.aEvent.EventName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<p>TODO: Add breadcrumb</p>
+
+<h2>@Html.DisplayFor(model  => model.aEvent.EventName)</h2>
 
 <div>
-    <h4>Event</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.EventName)
-        </dt>
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Rating: @ViewBag.AvgScore</h4>
+            <h5>Description</h5>
+            <p>@Html.DisplayFor(model => model.aEvent.EventDesc)</p>
+        </div>
+        <div class="col-md-8">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.EventName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.EventName)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.EventName)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EventDesc)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.EventDesc)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.EventDesc)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.EventDesc)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.Phone)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.Phone)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.Email)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.Email)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Start_date)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.Start_date)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Start_date)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.Start_date)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.End_date)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.End_date)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.End_date)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.End_date)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OwnerId)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.OwnerId)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.OwnerId)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.OwnerId)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PosterImg)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.aEvent.PosterImg)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.PosterImg)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.aEvent.PosterImg)
+                </dd>
 
-    </dl>
+            </dl>
+        </div>
+    </div>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.EventId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+@Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates)

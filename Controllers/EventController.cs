@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -30,11 +31,24 @@ namespace Evention2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Event @event = db.Events.Find(id);
-            if (@event == null)
+            // Retrieve event
+            Event aEvent = db.Events.Find(id);
+            // Check whether there exists such an event with given id.
+            if (aEvent == null)
             {
                 return HttpNotFound();
             }
+            // Retrieve corresponding rates.
+            JoinedViewModel viewModel = new JoinedViewModel();
+            List<EventRate> eventRates = viewModel.EventRates.Where(r => r.Event_id == id).ToList();
+            double avgScore = 0;
+            foreach (var rate in eventRates)
+            {
+                avgScore += rate.Rating_Score;
+            }
+            avgScore /= eventRates.Count();
+            ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
+            EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
             return View(@event);
         }
 
