@@ -29,7 +29,5 @@ namespace Evention2.Models
         {
             return new ApplicationDbContext();
         }
-
-        public System.Data.Entity.DbSet<Evention2.Models.Rate> Rates { get; set; }
     }
 }

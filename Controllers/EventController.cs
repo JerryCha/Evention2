@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Evention2.Models;
 using Microsoft.AspNet.Identity;
+using Type = Evention2.Models.Type;
 
 namespace Evention2.Controllers
 {
@@ -56,6 +57,10 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Create()
         {
+            Entity entityHelper = new Entity();
+            List<Type> types = entityHelper.Types.ToList();
+            SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
+            ViewBag.TypeList = selectListItems;
             return View();
         }
 
@@ -65,11 +70,18 @@ namespace Evention2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,PosterImg")] Event @event)
+        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,PosterImg")] Event @event)
         {
-            if (ModelState.IsValid)
+            Debug.WriteLine(@event);
+            Entity entityHelper = new Entity();
+            List<Type> types = entityHelper.Types.ToList();
+            SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
+            ViewBag.TypeList = selectListItems;
+
+            if (ModelState.IsValid) // TODO: Figure why state is not valid.
             {
                 @event.OwnerId = User.Identity.GetUserId();
+                Debug.WriteLine(@event);
                 db.Events.Add(@event);
                 db.SaveChanges();
                 return RedirectToAction("Index");

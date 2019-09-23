@@ -5,6 +5,7 @@ using System.Web;
 
 namespace Evention2.Models
 {
+
     public class EventDetailViewModel
     {
         public EventDetailViewModel(Event aEvent, List<EventRate> eventRates)

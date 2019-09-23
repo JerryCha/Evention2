@@ -13,7 +13,7 @@
         @Html.ActionLink("Evention", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse" aria-controls=".navbar-collapse" aria-expanded="false">
             <span class="navbar-toggler-icon"></span>
-        </button>    
+        </button>
         <div class="collapse navbar-collapse" id="navigation">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">@Html.ActionLink("Home", "Index", "Home", new { }, new { @class = "nav-link" })</li>
@@ -22,11 +22,14 @@
             </ul>
             @Html.Partial("_LoginPartial")
             <!--<div>
-        <span>@Html.ActionLink("Login", "Login", "Account", new { }, new { @class = "btn btn-outline-dark" })</span>
-        <span>@Html.ActionLink("Sign up", "Register", "Account", new { }, new { @class = "btn btn-outline-info" })</span>
-    </div>-->
+                <span>@Html.ActionLink("Login", "Login", "Account", new { }, new { @class = "btn btn-outline-dark" })</span>
+                <span>@Html.ActionLink("Sign up", "Register", "Account", new { }, new { @class = "btn btn-outline-info" })</span>
+            </div>-->
         </div>
     </nav>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
     <div class="container body-content" style="margin-top: 15px">
         @RenderBody()
         <hr />
@@ -35,8 +38,6 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
 </body>
 </html>

@@ -1,21 +1,29 @@
 ﻿@model Evention2.Models.Event
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Event Publish";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
+<h2>Publish Event</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>Event</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.EventType, ViewBag.TypeList as SelectList)
+                @Html.ValidationMessageFor(model => model.EventType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.EventName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -27,7 +35,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.EventDesc, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.EventDesc, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.EventDesc, htmlAttributes: new { @class = "form-control", rows = "10" })
                 @Html.ValidationMessageFor(model => model.EventDesc, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -51,7 +59,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Start_date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Start_date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Start_date, new { htmlAttributes = new { @class = "form-control", id = "datebox1" } })
                 @Html.ValidationMessageFor(model => model.Start_date, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -59,16 +67,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.End_date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.End_date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.End_date, new { htmlAttributes = new { @class = "form-control", id = "datebox2" } })
                 @Html.ValidationMessageFor(model => model.End_date, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.OwnerId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.OwnerId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.OwnerId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -82,7 +82,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </div>
     </div>
@@ -95,3 +95,18 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+<!--Datepicker script-->
+<script>
+    $(function () {
+        $('#datebox1').datepicker({
+            dateFormat: 'yy-mm-dd',
+        });
+        $('#datebox1').datepicker("setDate", new Date());
+        $('#datebox2').datepicker({
+            dateFormat: 'yy-mm-dd',
+        });
+        $('#datebox2').datepicker("setDate", new Date());
+    });
+</script>
