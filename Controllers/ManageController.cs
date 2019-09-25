@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Evention2.Models;
+using System.Diagnostics;
 
 namespace Evention2.Controllers
 {
@@ -48,6 +49,16 @@ namespace Evention2.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        [Authorize]
+        // GET: /Manage/MyProfile
+        public ActionResult MyProfile()
+        {
+            var userId = User.Identity.GetUserId();
+            Entity profileHelper = new Entity();
+            UserProfile profile = profileHelper.UserProfiles.Find(userId);
+            return View(profile);
         }
 
         //

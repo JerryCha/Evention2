@@ -347,6 +347,7 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Event\Index.cshtml" />
     <Content Include="Views\Rate\_EventRates.cshtml" />
+    <Content Include="Views\Manage\MyProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
