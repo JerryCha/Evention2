@@ -36,6 +36,17 @@
                 </dd>
 
                 <dt>
+                    Address
+                </dt>
+
+                <dd>
+                    @{
+                        string address = Model.aEvent.Street + ", " + Model.aEvent.Surburb + ", " + Model.aEvent.PostCode;
+                    }
+                    @address
+                </dd>
+
+                <dt>
                     @Html.DisplayNameFor(model => model.aEvent.Phone)
                 </dt>
 

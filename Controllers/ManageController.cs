@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Evention2.Models;
+using System.Diagnostics;
 
 namespace Evention2.Controllers
 {

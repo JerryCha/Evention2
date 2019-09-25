@@ -70,19 +70,20 @@ namespace Evention2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,PosterImg")] Event @event)
+        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,PosterImg")] EventCreateViewModel @event)
         {
             Debug.WriteLine(@event);
             Entity entityHelper = new Entity();
             List<Type> types = entityHelper.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
-
-            if (ModelState.IsValid) // TODO: Figure why state is not valid.
+            if (ModelState.IsValid)
             {
-                @event.OwnerId = User.Identity.GetUserId();
-                Debug.WriteLine(@event);
-                db.Events.Add(@event);
+                Event newEvent = @event.ToEvent();
+                newEvent.OwnerId = User.Identity.GetUserId();
+                newEvent.PosterImg = "...";
+                Debug.WriteLine(newEvent);
+                db.Events.Add(newEvent);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

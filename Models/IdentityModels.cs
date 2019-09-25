@@ -29,5 +29,6 @@ namespace Evention2.Models
         {
             return new ApplicationDbContext();
         }
+
     }
 }

@@ -5,11 +5,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+    <div class="row justify-content-between">
+        <div class="col-6 my-auto">
+            <h2>Event List</h2>
+        </div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+        <div class="col-2 my-auto">
+            <p>
+                @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-outline-primary" })
+            </p>
+        </div>
+    </div>
 <table class="table">
     <tr>
         <th>
@@ -19,10 +25,7 @@
             @Html.DisplayNameFor(model => model.EventDesc)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phone)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
+            Address
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Start_date)
@@ -31,12 +34,11 @@
             @Html.DisplayNameFor(model => model.End_date)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.OwnerId)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.PosterImg)
         </th>
-        <th></th>
+        <th>
+            Operation
+        </th>
     </tr>
 
 @foreach (var item in Model) {
@@ -48,10 +50,10 @@
             @Html.DisplayFor(modelItem => item.EventDesc)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Phone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
+            @{ 
+                string eventAddress = $"{item.Street}, {item.Surburb}, {item.PostCode}";
+            }
+            @eventAddress
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Start_date)
@@ -59,17 +61,17 @@
         <td>
             @Html.DisplayFor(modelItem => item.End_date)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OwnerId)
-        </td>
+
         <td>
             @Html.DisplayFor(modelItem => item.PosterImg)
         </td>
         <td>
             @if (User.IsInRole("Administrator"))
             {
-                @Html.ActionLink("Edit", "Edit", new { id = item.EventId }) 
-                @Html.ActionLink("Delete", "Delete", new { id = item.EventId }) 
+                @Html.ActionLink("Edit", "Edit", new { id = item.EventId })
+                @Html.DisplayText("|")
+                @Html.ActionLink("Delete", "Delete", new { id = item.EventId })
+                @Html.DisplayText("|")
             }
 
             @Html.ActionLink("Details", "Details", new { id = item.EventId })

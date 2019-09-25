@@ -15,6 +15,7 @@ namespace Evention2.Models
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<Type> Types { get; set; }
+        public virtual DbSet<UserProfile> UserProfiles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

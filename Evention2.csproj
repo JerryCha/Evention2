@@ -178,6 +178,7 @@
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -347,6 +348,13 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Event\Index.cshtml" />
     <Content Include="Views\Rate\_EventRates.cshtml" />
+    <Content Include="Views\Manage\MyProfile.cshtml" />
+    <Content Include="Views\Manage\EditProfile.cshtml" />
+    <Content Include="Views\My\Create.cshtml" />
+    <Content Include="Views\My\Delete.cshtml" />
+    <Content Include="Views\My\Details.cshtml" />
+    <Content Include="Views\My\Edit.cshtml" />
+    <Content Include="Views\My\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />

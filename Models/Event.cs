@@ -36,8 +36,22 @@ namespace Evention2.Models
 
         [Required]
         public string PosterImg { get; set; }
-
+        
+        [Required]
         public int EventType { get; set; }
+
+        [Required]
+        public string Street { get; set; }
+
+        [Required]
+        public string Surburb { get; set; }
+
+        [Required]
+        public string State { get; set; }
+
+        [Required]
+        public string PostCode { get; set; }
+
 
         public override string ToString()
         {
@@ -47,6 +61,7 @@ namespace Evention2.Models
             builder.Append("EventDesc: " + EventDesc + ", ");
             builder.Append("Phone: " + Phone + ", ");
             builder.Append("Email: " + Email + ", ");
+            builder.Append("Address: " + Street + ", " + Surburb + ", " + State + ", " + PostCode);
             builder.Append("Start_date: " + Start_date + ", ");
             builder.Append("End_date: " + End_date + ", ");
             builder.Append("OwnerId: " + OwnerId + ", ");
