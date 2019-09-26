@@ -13,7 +13,7 @@ namespace Evention2.Controllers
 {
     public class MyController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private Entity db = new Entity();
 
         // GET: My
         public ActionResult Index()
