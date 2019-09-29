@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Evention2.Controllers
 {
+    [Authorize]
     public class MyController : Controller
     {
         private Entity db = new Entity();
@@ -20,7 +21,8 @@ namespace Evention2.Controllers
         {
             var userId = User.Identity.GetUserId();
             UserProfile profile = db.UserProfiles.Find(userId);
-            return View(profile);
+            List<Event> userEvents = db.Events.Where(e => e.OwnerId == userId).ToList();
+            return View(new MyIndexViewModel(profile, userEvents));
         }
 
         // GET: My/Details

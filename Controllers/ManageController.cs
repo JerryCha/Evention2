@@ -53,7 +53,6 @@ namespace Evention2.Controllers
 
         //
         // GET: /Manage/Index
-        [Authorize(Roles ="Administrator")]
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =

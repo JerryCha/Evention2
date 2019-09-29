@@ -1,0 +1,55 @@
+﻿@model Evention2.Models.Event
+
+<div class="modal fade" id="eventShareModal" role="dialog" tabindex="-1" aria-labelledby="eventShareModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Who do you want to share with?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="javascript:(0)" onsubmit="submitShareEmail()">
+                <div class="modal-body">
+                    <div class="form-group" id="emailForm">
+                        <label for="email" class="col-form-label">Email Address: </label>
+                        <input type="email" class="form-control" id="emailAddr" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="submitShare">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeModal() {
+        $('#eventShareModal').modal('hide');
+    }
+    function submitShareEmail() {
+        emailAddr = $("#emailAddr").val();
+        event = {};
+        console.log(emailAddr);
+        if (isEmailAddr(emailAddr)) {
+            console.log("Yes. It's email address.")
+            $.ajax({
+                type: "GET",
+                url: "/Event/ShareEvent",
+                data: {"emailAddr": emailAddr, "eventId": @Model.EventId },
+                success: closeModal,
+                error: () => { alert("Failed") }
+            })
+        }
+    }
+    function isEmailAddr(addr) {
+        emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@("@")[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        if (emailReg.exec(addr)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

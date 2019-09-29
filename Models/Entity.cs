@@ -4,6 +4,7 @@ namespace Evention2.Models
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using static Evention2.Models.StatisticsModel;
 
     public partial class Entity : DbContext
     {
@@ -16,6 +17,7 @@ namespace Evention2.Models
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<Type> Types { get; set; }
         public virtual DbSet<UserProfile> UserProfiles { get; set; }
+        public virtual DbSet<EventVisitLog> EventVisitLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

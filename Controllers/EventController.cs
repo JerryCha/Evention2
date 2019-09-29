@@ -10,13 +10,14 @@ using System.Web.Mvc;
 using Evention2.Models;
 using Microsoft.AspNet.Identity;
 using Type = Evention2.Models.Type;
+using Evention2.Services;
+using System.Threading.Tasks;
 
 namespace Evention2.Controllers
 {
     public class EventController : Controller
     {
         private Entity db = new Entity();
-
 
         // GET: Event
         public ActionResult Index()
@@ -50,7 +51,26 @@ namespace Evention2.Controllers
             avgScore /= eventRates.Count();
             ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
+            //await Task.Run(EventVisitLogServices.LogVisit(@event.aEvent.EventId, Request.UserHostAddress, User.Identity.GetUserId()));
             return View(@event);
+        }
+
+        // GET: Event/ShareEvent
+        // Reference: https://blog.csdn.net/gghh2015/article/details/79116718
+        [Authorize]
+        public ActionResult ShareEvent()
+        {
+            string shareEmailAddr = Request.QueryString["emailAddr"];
+            int eventId;
+            bool idParseSucceed = Int32.TryParse(Request.QueryString["eventId"], out eventId);
+            if (idParseSucceed)
+            {
+                Debug.WriteLine(shareEmailAddr, eventId);
+                var shareHelper = new EmailServices();
+                shareHelper.ShareByEmail(shareEmailAddr, eventId);
+                return new HttpStatusCodeResult(200);
+            }
+            return new HttpStatusCodeResult(400);
         }
 
         // GET: Event/Create

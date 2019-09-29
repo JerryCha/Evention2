@@ -1,78 +1,98 @@
-﻿@model Evention2.Models.UserProfile
+﻿@model Evention2.Models.MyIndexViewModel
 @{
     ViewBag.Title = "MyProfile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>MyProfile</h2>
+<h1>My Center</h1>
 <hr />
-<div class="row justify-content-center">
-    <div>
+<h2>My Events</h2>
+@foreach (var item in Model.MyEvents)
+{
+<div class="row">
+    <div class="col-md-2">
+        @Html.DisplayFor(modelItem => item.Start_date)
+    </div>
+    <div class="col-md-6">
+        <h3>@Html.DisplayFor(modelItem => item.EventName)</h3>
+    </div>
+    <div class="col-md-2">
+        @Html.ActionLink("Edit", "Edit", "Event", new { id = item.EventId },new { @class = "btn btn-primary" })
+        @Html.ActionLink("Delete", "Delete", "Event", new { id = item.EventId }, new { @class = "btn btn-danger" })
+    </div>
+</div>
+}
+<hr />
+
+<h2>MyProfile</h2>
+@Html.ActionLink("Edit", "Edit")
+<div class="row">
+    <div class="col">
         <dl class="dl-horizontal">
             <dt>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.Profile.FirstName)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.FirstName)
+                @Html.DisplayFor(model => model.Profile.FirstName)
             </dd>
 
-            @if (Model.MiddleName != null)
+            @if (Model.Profile.MiddleName != null)
             {
                 <dt>
-                    @Html.DisplayNameFor(model => model.MiddleName)
+                    @Html.DisplayNameFor(model => model.Profile.MiddleName)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.MiddleName)
+                    @Html.DisplayFor(model => model.Profile.MiddleName)
                 </dd>
             }
 
             <dt>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.Profile.LastName)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.LastName)
+                @Html.DisplayFor(model => model.Profile.LastName)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.Gender)
+                @Html.DisplayNameFor(model => model.Profile.Gender)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Gender)
+                @Html.DisplayFor(model => model.Profile.Gender)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.Birthday)
+                @Html.DisplayNameFor(model => model.Profile.Birthday)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Birthday)
+                @Html.DisplayFor(model => model.Profile.Birthday)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.Street)
+                @Html.DisplayNameFor(model => model.Profile.Street)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Street)
+                @Html.DisplayFor(model => model.Profile.Street)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.Surburb)
+                @Html.DisplayNameFor(model => model.Profile.Surburb)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.Surburb)
+                @Html.DisplayFor(model => model.Profile.Surburb)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.State)
+                @Html.DisplayNameFor(model => model.Profile.State)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.State)
+                @Html.DisplayFor(model => model.Profile.State)
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.PostCode)
+                @Html.DisplayNameFor(model => model.Profile.PostCode)
             </dt>
             <dd>
-                @Html.DisplayFor(model => model.PostCode)
+                @Html.DisplayFor(model => model.Profile.PostCode)
             </dd>
         </dl>
     </div>
