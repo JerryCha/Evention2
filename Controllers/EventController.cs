@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 using Type = Evention2.Models.Type;
 using Evention2.Services;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Evention2.Controllers
 {
@@ -51,7 +52,9 @@ namespace Evention2.Controllers
             avgScore /= eventRates.Count();
             ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
-            //await Task.Run(EventVisitLogServices.LogVisit(@event.aEvent.EventId, Request.UserHostAddress, User.Identity.GetUserId()));
+            new Thread(() => {
+                    EventVisitLogServices.LogVisit(@event.aEvent.EventId, Request.UserHostAddress, User.Identity.GetUserId());
+            });
             return View(@event);
         }
 

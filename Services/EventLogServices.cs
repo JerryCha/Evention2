@@ -14,7 +14,6 @@ namespace Evention2.Services
         private static Entity dbHelper = new Entity();
         public static void LogVisit(int EventId, string IpAddr, string ViewerId = null)
         {
-            Thread.Sleep(10000);
             dbHelper.EventVisitLogs.Add(new EventVisitLog(EventId, IpAddr, ViewerId));
         }
 
