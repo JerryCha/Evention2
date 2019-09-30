@@ -13,6 +13,7 @@ using Type = Evention2.Models.Type;
 using Evention2.Services;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Evention2.Controllers
 {
@@ -25,6 +26,13 @@ namespace Evention2.Controllers
         {
             
             return View(db.Events.ToList());
+        }
+
+        // GET: Event/IPtest
+        public HtmlString IPTest()
+        {
+            Debug.WriteLine(Request.UserHostAddress.ToString());
+            return new HtmlString(DateTime.Now.ToString());
         }
 
         // GET: Event/Details/5
@@ -53,8 +61,8 @@ namespace Evention2.Controllers
             ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
             new Thread(() => {
-                    EventVisitLogServices.LogVisit(@event.aEvent.EventId, Request.UserHostAddress, User.Identity.GetUserId());
-            });
+                    EventVisitLogServices.LogVisit(@event.aEvent.EventId, Request.UserHostAddress.ToString(), User.Identity.GetUserId());
+            }).Start();
             return View(@event);
         }
 
@@ -64,14 +72,18 @@ namespace Evention2.Controllers
         public ActionResult ShareEvent()
         {
             string shareEmailAddr = Request.QueryString["emailAddr"];
-            int eventId;
-            bool idParseSucceed = Int32.TryParse(Request.QueryString["eventId"], out eventId);
-            if (idParseSucceed)
+            string emailRegex = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
+            if (new Regex(emailRegex, RegexOptions.IgnoreCase).IsMatch(shareEmailAddr))
             {
-                Debug.WriteLine(shareEmailAddr, eventId);
-                var shareHelper = new EmailServices();
-                shareHelper.ShareByEmail(shareEmailAddr, eventId);
-                return new HttpStatusCodeResult(200);
+                int eventId;
+                bool idParseSucceed = Int32.TryParse(Request.QueryString["eventId"], out eventId);
+                if (idParseSucceed)
+                {
+                    Debug.WriteLine(shareEmailAddr, eventId);
+                    var shareHelper = new EmailServices();
+                    shareHelper.ShareByEmail(shareEmailAddr, eventId);
+                    return new HttpStatusCodeResult(200);
+                }
             }
             return new HttpStatusCodeResult(400);
         }
@@ -93,7 +105,7 @@ namespace Evention2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,PosterImg")] EventCreateViewModel @event)
+        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,Street,Surburb,State,PostCode,PosterImg")] EventCreateViewModel @event)
         {
             Debug.WriteLine(@event);
             Entity entityHelper = new Entity();

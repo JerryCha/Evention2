@@ -5,6 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!--MapBox references-->
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.css' rel='stylesheet' />
+
 <div>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb" style="background-color:rgba(0,0,0,0)">
@@ -15,12 +19,22 @@
     </nav>
 </div>
 
-<h2>@Html.DisplayFor(model => model.aEvent.EventName)</h2>
+<div class="row justify-content-between">
+    <div class="col-md-10">
+        <h2>@Html.DisplayFor(model => model.aEvent.EventName)</h2>
+    </div>
+    <div class="col-md-2">
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId }, new { @class = "btn btn-outline-primary" })
+        </p>
+    </div>
+</div>
 
 <div>
     <hr />
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-sm-12 col-md-4">
+            <img class="img-fluid" src="@Url.Content("/Content/img/610d6911ly1fl7q6b07qyj20b40b4tc3.jpg")" />
             <h4>Rating: @ViewBag.AvgScore</h4>
             <h5>Description</h5>
             <p>@Html.DisplayFor(model => model.aEvent.EventDesc)</p>
@@ -108,16 +122,56 @@
 </div>
 
 <div class="row">
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId })
-    </p>
+    
 </div>
 <div class="row">
     <!--<p>@Html.ActionLink("Send to my email", "ShareEvent", "Event", new { id = User.Identity.GetUserId()}, null)</p>-->
     <p data-target="#eventShareModal" data-toggle="modal"><a href="#">Share by email</a></p>
 </div>
+<h2>Location Map</h2>
+<div class="row">
+    <div id='map' style='width: 100%; height: 450px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [144.9531077, -37.8261293],
+            zoom: 14
+        });
+        map.on('load', () => {
+            map.loadImage('/Content/img/cao.jpg', (error, image) => {
+                if (error) throw error;
+                map.addImage('cao', image);
+                map.addLayer({
+                    "id": "points",
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [{
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [144.9531077, -37.8261293]
+                                }
+                            }]
+                        }
+                    },
+                    "layout": {
+                        "icon-image": "cao",
+                        "icon-size": 0.4
+                    }
+                });
+            });
+        });
+    </script>
+</div>
 
-@Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates)
+<div class="row my-3">
+    @Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates)
+</div>
 
 
-@Html.Partial("~/Views/Event/_Share.cshtml", Model.aEvent) 
+@Html.Partial("~/Views/Event/_Share.cshtml", Model.aEvent)

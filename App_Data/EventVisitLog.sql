@@ -1,6 +1,6 @@
 ﻿CREATE TABLE EventVisitLog
 (
-	[Record_Id] NVARCHAR(128) NOT NULL PRIMARY KEY, 
+	[Record_Id] INT IDENTITY(1,1) PRIMARY KEY, 
     [Viewer_Id] NVARCHAR(128) NULL, 
     [Event_Id] INT NOT NULL, 
     [IP_Address] NVARCHAR(15) NOT NULL, 

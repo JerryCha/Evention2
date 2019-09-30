@@ -58,6 +58,10 @@ namespace Evention2.Models
             e.Start_date = this.Start_date;
             e.End_date = this.End_date;
             e.EventType = this.EventType;
+            e.Street = this.Street;
+            e.Surburb = this.Surburb;
+            e.State = this.State;
+            e.PostCode = this.PostCode;
             return e;
         }
 

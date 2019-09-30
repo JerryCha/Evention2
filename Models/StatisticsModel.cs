@@ -19,13 +19,14 @@ namespace Evention2.Models
 
             public EventVisitLog(int eventId, string ipAddr, string viewerId = null)
             {
+                this.Record_Id = 0;
                 this.Event_Id = eventId;
                 this.IP_Address = ipAddr;
-                this.View_Time = new DateTime();
+                this.View_Time = DateTime.Now;
             }
 
             [Key]
-            public string Record_Id { get; set; }
+            public int Record_Id { get; set; }
 
             [StringLength(128)]
             public string Viewer_Id { get; set; }
