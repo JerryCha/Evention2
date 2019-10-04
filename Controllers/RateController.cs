@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Evention2.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Evention2.Controllers
 {
@@ -15,8 +17,8 @@ namespace Evention2.Controllers
     {
         private Entity db = new Entity();
 
-        [Authorize(Roles="Administrator")]
         // GET: Rate
+        [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
             if (Request.QueryString.Count != 0)
@@ -35,9 +37,21 @@ namespace Evention2.Controllers
         }
 
         // GET: Rate/Create
-        public ActionResult Create()
+        public ActionResult Create(int? eventId)
         {
-            return View();
+            if (eventId == null)
+            {
+                return new HttpStatusCodeResult(400);
+            }
+            var e = db.Events.Find(eventId);
+            if (e == null)
+            {
+                return new HttpStatusCodeResult(404);
+            }
+            RateCreateViewModel r = new RateCreateViewModel();
+            r.Event_id = e.EventId;
+            r.Event_name = e.EventName;
+            return View(r);
         }
 
         // POST: Rate/Create
@@ -45,13 +59,25 @@ namespace Evention2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Event_id,Reviewer_id,Rating_Score,Comments")] Rate rate)
+        public ActionResult Create(int eventId, [Bind(Include = "Rating_Score,Comments")] RateCreateViewModel rate)
         {
+            rate.Event_id = eventId;
             if (ModelState.IsValid)
             {
-                db.Rates.Add(rate);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var userId = User.Identity.GetUserId();
+                Rate newRate = rate.ToRate();
+                newRate.Reviewer_id = userId;
+                try
+                {
+                    db.Rates.Add(newRate);
+                    db.SaveChanges();
+                    return Redirect("/Event/Details/" + eventId);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    return View(rate);
+                }
             }
 
             return View(rate);
@@ -75,6 +101,7 @@ namespace Evention2.Controllers
         // POST: Rate/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles="Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Event_id,Reviewer_id,Rating_Score,Comments")] Rate rate)

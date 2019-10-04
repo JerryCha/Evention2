@@ -217,6 +217,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MyController.cs" />
     <Compile Include="Controllers\RateController.cs" />
+    <Compile Include="Models\RateViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
