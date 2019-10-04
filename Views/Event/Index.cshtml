@@ -22,9 +22,6 @@
             @Html.DisplayNameFor(model => model.EventName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EventDesc)
-        </th>
-        <th>
             Address
         </th>
         <th>
@@ -32,9 +29,6 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.End_date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PosterImg)
         </th>
         <th>
             Operation
@@ -45,9 +39,6 @@
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.EventName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EventDesc)
         </td>
         <td>
             @{ 
@@ -62,9 +53,6 @@
             @Html.DisplayFor(modelItem => item.End_date)
         </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.PosterImg)
-        </td>
         <td>
             @if (User.IsInRole("Administrator"))
             {

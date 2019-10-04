@@ -34,7 +34,7 @@
     <hr />
     <div class="row">
         <div class="col-sm-12 col-md-4">
-            <img class="img-fluid" src="@Url.Content("/Content/img/610d6911ly1fl7q6b07qyj20b40b4tc3.jpg")" />
+            <img src="@Url.Content(Model.aEvent.PosterImg)" class="img-fluid"/>
             <h4>Rating: @ViewBag.AvgScore</h4>
             <h5>Description</h5>
             <p>@Html.DisplayFor(model => model.aEvent.EventDesc)</p>
@@ -98,22 +98,6 @@
 
                 <dd>
                     @Html.DisplayFor(model => model.aEvent.End_date)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.aEvent.OwnerId)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.aEvent.OwnerId)
-                </dd>
-
-                <dt>
-                    @Html.DisplayNameFor(model => model.aEvent.PosterImg)
-                </dt>
-
-                <dd>
-                    @Html.DisplayFor(model => model.aEvent.PosterImg)
                 </dd>
 
             </dl>

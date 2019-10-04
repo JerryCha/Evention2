@@ -44,17 +44,25 @@ namespace Evention2.Controllers
             {
                 return HttpNotFound();
             }
+            aEvent.PosterImg = aEvent.PosterImg == "" ? 
+                "/Content/img/70634057gy1fw7seyf81mj20bx0blwex.jpg" : "/Content/poster/" + aEvent.PosterImg;
+
             // Retrieve corresponding rates.
             JoinedViewModel viewModel = new JoinedViewModel();
             List<EventRate> eventRates = viewModel.EventRates.
                                                     Where(r => r.Event_id == id).ToList();
-            double avgScore = 0;
-            foreach (var rate in eventRates)
+            if (eventRates.Count == 0)
+                ViewBag.AvgScore = "No rates";
+            else
             {
-                avgScore += rate.Rating_Score;
+                double avgScore = 0;
+                foreach (var rate in eventRates)
+                {
+                    avgScore += rate.Rating_Score;
+                }
+                avgScore /= eventRates.Count();
+                ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             }
-            avgScore /= eventRates.Count();
-            ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
             // Apply a new thread to handle visit logging task.
             new Thread(() => {
@@ -183,7 +191,7 @@ namespace Evention2.Controllers
             {
                 return HttpNotFound();
             }
-            if (User.Identity.GetUserId() != @event.OwnerId || User.IsInRole("Administrator"))
+            if (User.Identity.GetUserId() != @event.OwnerId && !User.IsInRole("Administrator"))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
