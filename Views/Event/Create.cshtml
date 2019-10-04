@@ -8,7 +8,7 @@
 <h2>Publish Event</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create", "Event", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -105,10 +105,64 @@
     </div>
 
     <div class="form-group">
+        <div class="col-md-2">
+            <label>Poster</label>
+        </div>
+        <div class="col-md-10">
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" id="poster_upload" class="custom-file-input" name="PosterImage" aria-describedby="uploadButton" />
+                    <label class="custom-file-label" id="fileLabel" for="poster_upload">Choose File</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(window).ready(function () {
+            $("#poster_upload").change((e) => {
+                var fileName = e.target.value;
+                // TODO: Test under *nix environment.
+                fileName = fileName.substring(fileName.lastIndexOf("\\")+1, fileName.length);
+                $("#fileLabel").text(fileName);
+            })
+            $("#uploadButton").click((e) => {
+                var data = new FormData();
+                data.append("file", $("#poster_upload")[0].files[0]);
+                $.ajax({
+                    type: "POST",
+                    url: '/Event/UploadPoster',
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: (result) => {
+                        console.log(result);
+                    },
+                    error: () => { alert("failed"); }
+                })
+            })
+        })
+    </script>
+
+
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Create" class="btn btn-primary" />
         </div>
     </div>
+
+    <div class="form-group">
+        <label for="address">
+            Address:
+        </label>
+        <input type="text" class="form-text" id="addressBox" />
+    </div>
+    <script>
+        // Passed an event object.
+        $("#addressBox").change((e) => {
+            console.log(e.target.value);
+        });
+    </script>
+
 </div>
 }
 
@@ -124,6 +178,8 @@
 <!--Datepicker script-->
 <script>
     $(function () {
+        var startDate = new Date();
+        
         $('#datebox1').datepicker({
             dateFormat: 'yy-mm-dd',
         });
@@ -133,4 +189,5 @@
         });
         $('#datebox2').datepicker("setDate", new Date());
     });
+    $()
 </script>

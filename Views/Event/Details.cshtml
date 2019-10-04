@@ -8,7 +8,7 @@
 <!--MapBox references-->
 <script src='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.js'></script>
 <link href='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.css' rel='stylesheet' />
-
+<script src="https://unpkg.com/@("@")mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
 <div>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb" style="background-color:rgba(0,0,0,0)">
@@ -120,10 +120,13 @@
         </div>
     </div>
 </div>
+<!--Initialize js environment in which stores detailed information of event.-->
+<script>
+    class Event {
 
-<div class="row">
-    
-</div>
+    }
+</script>
+
 <div class="row">
     <!--<p>@Html.ActionLink("Send to my email", "ShareEvent", "Event", new { id = User.Identity.GetUserId()}, null)</p>-->
     <p data-target="#eventShareModal" data-toggle="modal"><a href="#">Share by email</a></p>
@@ -168,8 +171,8 @@
         });
     </script>
 </div>
-
-<div class="row my-3">
+<script src="~/Scripts/event_detail.js"></script>
+<div class="row my-3" style="display:block">
     @Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates)
 </div>
 

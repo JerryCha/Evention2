@@ -14,25 +14,20 @@ using Evention2.Services;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace Evention2.Controllers
 {
     public class EventController : Controller
     {
         private Entity db = new Entity();
+        private static PosterManagementService posterTempStorage = PosterManagementService.GetInstance();
 
         // GET: Event
         public ActionResult Index()
         {
             
             return View(db.Events.ToList());
-        }
-
-        // GET: Event/IPtest
-        public HtmlString IPTest()
-        {
-            Debug.WriteLine(Request.UserHostAddress.ToString());
-            return new HtmlString(DateTime.Now.ToString());
         }
 
         // GET: Event/Details/5
@@ -51,7 +46,8 @@ namespace Evention2.Controllers
             }
             // Retrieve corresponding rates.
             JoinedViewModel viewModel = new JoinedViewModel();
-            List<EventRate> eventRates = viewModel.EventRates.Where(r => r.Event_id == id).ToList();
+            List<EventRate> eventRates = viewModel.EventRates.
+                                                    Where(r => r.Event_id == id).ToList();
             double avgScore = 0;
             foreach (var rate in eventRates)
             {
@@ -60,9 +56,12 @@ namespace Evention2.Controllers
             avgScore /= eventRates.Count();
             ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
+            // Apply a new thread to handle visit logging task.
             new Thread(() => {
-                    EventVisitLogServices.LogVisit(@event.aEvent.EventId, Request.UserHostAddress.ToString(), User.Identity.GetUserId());
-            }).Start();
+                    EventVisitLogServices.LogVisit(@event.aEvent.EventId, 
+                                                    Request.UserHostAddress.ToString(), 
+                                                    User.Identity.GetUserId());
+                    }).Start();
             return View(@event);
         }
 
@@ -72,6 +71,7 @@ namespace Evention2.Controllers
         public ActionResult ShareEvent()
         {
             string shareEmailAddr = Request.QueryString["emailAddr"];
+            // Email Regex may need to redesign.
             string emailRegex = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
             if (new Regex(emailRegex, RegexOptions.IgnoreCase).IsMatch(shareEmailAddr))
             {
@@ -105,25 +105,65 @@ namespace Evention2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,Street,Surburb,State,PostCode,PosterImg")] EventCreateViewModel @event)
+        public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,Street,Surburb,State,PostCode,PosterImage")] EventCreateViewModel @event)
         {
-            Debug.WriteLine(@event);
             Entity entityHelper = new Entity();
             List<Type> types = entityHelper.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
+            if (Request.Files.Count == 0)
+            {
+                return View(@event);
+            }
+
             if (ModelState.IsValid)
             {
+                var fileLoc = SavePoster(Request.Files[0]);
                 Event newEvent = @event.ToEvent();
-                newEvent.OwnerId = User.Identity.GetUserId();
-                newEvent.PosterImg = "...";
-                Debug.WriteLine(newEvent);
+                var userId = User.Identity.GetUserId();
+                newEvent.OwnerId = userId;
+                if (fileLoc.Result == null)
+                    newEvent.PosterImg = "";
+                else
+                    newEvent.PosterImg = fileLoc.Result;
                 db.Events.Add(newEvent);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Event");
             }
 
             return View(@event);
+        }
+
+
+        private async Task<String> SavePoster(HttpPostedFileBase file)
+        {
+            if (file == null || file.ContentLength <= 0)
+            {
+                return null;
+            }
+
+            var fileExt = file.FileName.Split('.').Last();
+            if (fileExt != "jpg" && fileExt != "png" && fileExt != "webp")
+            {
+                return null;
+            }
+
+            var path = Server.MapPath("~/Content/poster/");
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.StackTrace.ToString());
+                }
+            }
+            var fileLoc = path + Path.GetFileName(file.FileName);
+            file.SaveAs(fileLoc);
+
+            return file.FileName;
         }
 
         // GET: Event/Edit/5
@@ -156,7 +196,7 @@ namespace Evention2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit([Bind(Include = "EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,PosterImg")] Event @event)
+        public ActionResult Edit([Bind(Include = "EventId,EventName,EventDesc,Phone,Email,Start_date,End_date")] Event @event)
         {
             // Retrieve old data of event
             Event currEvent = db.Events.AsNoTracking().
