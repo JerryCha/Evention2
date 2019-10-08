@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<Evention2.Models.Rate>
 
 @{
-    ViewBag.Title = "View";
+    ViewBag.Title = "Rate Management";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>View</h2>
+<h2>Rate Management</h2>
 
 <table class="table">
     <tr>
@@ -21,7 +21,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Comments)
         </th>
-        <th></th>
+        <th>Operation</th>
     </tr>
 
 @foreach (var item in Model) {

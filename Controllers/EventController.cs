@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Text;
 
 namespace Evention2.Controllers
 {
@@ -76,24 +77,35 @@ namespace Evention2.Controllers
         // GET: Event/ShareEvent
         // Reference: https://blog.csdn.net/gghh2015/article/details/79116718
         [Authorize]
+        [HttpPost]
         public ActionResult ShareEvent()
         {
-            string shareEmailAddr = Request.QueryString["emailAddr"];
+            string shareEmailAddr = Request.Form["emailAddr"];
+
             // Email Regex may need to redesign.
             string emailRegex = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
             if (new Regex(emailRegex, RegexOptions.IgnoreCase).IsMatch(shareEmailAddr))
             {
                 int eventId;
-                bool idParseSucceed = Int32.TryParse(Request.QueryString["eventId"], out eventId);
+                bool idParseSucceed = Int32.TryParse(Request.Form["eventId"], out eventId);
                 if (idParseSucceed)
                 {
                     Debug.WriteLine(shareEmailAddr, eventId);
                     var shareHelper = new EmailServices();
                     shareHelper.ShareByEmail(shareEmailAddr, eventId);
-                    return new HttpStatusCodeResult(200);
+
+                    Response.StatusCode = 200;
+                    return Json("success");
                 }
+
+                Response.StatusCode = 400;
+                return Json("event parse error");
             }
-            return new HttpStatusCodeResult(400);
+            else
+            {
+                Response.StatusCode = 400;
+                return Json("Email address does not match the pattern");
+            }
         }
 
         // GET: Event/Create

@@ -58,11 +58,11 @@ namespace Evention2
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "640856151424-034g0tbocs1fa3j7183nb60063btlo0e.apps.googleusercontent.com",
+                ClientSecret = "by25_Rc__LsaiJtkgJ5qj7On"
+            });
         }
     }
 }

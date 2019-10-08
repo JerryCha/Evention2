@@ -32,16 +32,16 @@
     function submitShareEmail() {
         emailAddr = $("#emailAddr").val();
         event = {};
-        console.log(emailAddr);
         if (isEmailAddr(emailAddr)) {
-            console.log("Yes. It's email address.")
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: "/Event/ShareEvent",
-                data: {"emailAddr": emailAddr, "eventId": @Model.EventId },
+                data: { "emailAddr": emailAddr, "eventId": @Model.EventId },
                 success: closeModal,
-                error: () => { alert("Failed") }
+                error: (data) => { alert(data.responseText); }
             })
+        } else {
+            alert("Please provide correct email.");
         }
     }
     function isEmailAddr(addr) {
