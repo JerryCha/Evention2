@@ -402,6 +402,8 @@
     <Content Include="Views\My\Index.cshtml" />
     <Content Include="Views\Event\_Share.cshtml" />
     <Content Include="Views\Rate\Create.cshtml" />
+    <Content Include="Views\Rate\Index.cshtml" />
+    <Content Include="Views\Rate\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\poster\" />

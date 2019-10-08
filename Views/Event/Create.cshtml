@@ -135,10 +135,17 @@
                     var endDate = addDays(today, 4);
                     $('#datebox1').datepicker({
                         dateFormat: 'yy-mm-dd',
+                        minDate: today,
+                        onSelect: function (selectedDate) {
+                            console.log(selectedDate);
+                            $('#datebox2').datepicker("setDate", addDays(selectedDate, 2));
+                            $('#datebox2').datepicker("option", "minDate", addDays(selectedDate, 0));
+                        }
                     });
                     $('#datebox1').datepicker("setDate", startDate);
                     $('#datebox2').datepicker({
                         dateFormat: 'yy-mm-dd',
+                        minDate: today
                     });
                     $('#datebox2').datepicker("setDate", endDate);
                 });

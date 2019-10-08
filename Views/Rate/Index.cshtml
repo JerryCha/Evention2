@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Evention2.Models.Rate>
+
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>View</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Event_id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Reviewer_id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Rating_Score)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comments)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Event_id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Reviewer_id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rating_Score)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comments)
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id})
+        </td>
+    </tr>
+}
+
+</table>
