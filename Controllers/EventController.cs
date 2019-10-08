@@ -100,8 +100,7 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            Entity entityHelper = new Entity();
-            List<Type> types = entityHelper.Types.ToList();
+            List<Type> types = db.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
             return View();
@@ -115,8 +114,7 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,Street,Surburb,State,PostCode,PosterImage")] EventCreateViewModel @event)
         {
-            Entity entityHelper = new Entity();
-            List<Type> types = entityHelper.Types.ToList();
+            List<Type> types = db.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
             if (Request.Files.Count == 0)
@@ -150,7 +148,7 @@ namespace Evention2.Controllers
                 return null;
             }
 
-            var fileExt = file.FileName.Split('.').Last();
+            var fileExt = file.FileName.Split('.').Last().ToLower();
             if (fileExt != "jpg" && fileExt != "png" && fileExt != "webp")
             {
                 return null;
@@ -178,6 +176,9 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Edit(int? id)
         {
+            List<Type> types = db.Types.ToList();
+            SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
+            ViewBag.TypeList = selectListItems;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -195,7 +196,7 @@ namespace Evention2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
-            return View(@event);
+            return View(@event.ToCreateViewModel());
         }
 
         // POST: Event/Edit/5
@@ -204,11 +205,15 @@ namespace Evention2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Edit([Bind(Include = "EventId,EventName,EventDesc,Phone,Email,Start_date,End_date")] Event @event)
+        public ActionResult Edit([Bind(Include = "EventId,EventType,EventName,EventDesc,Phone,Email,Start_date,End_date,Street,Surburb,State,PostCode")] EventCreateViewModel e)
         {
+            List<Type> types = db.Types.ToList();
+            SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
+            ViewBag.TypeList = selectListItems;
+
             // Retrieve old data of event
             Event currEvent = db.Events.AsNoTracking().
-                                        Where(e => e.EventId == @event.EventId).
+                                        Where(ee => ee.EventId == e.EventId).
                                         First();
             // currEvent null if query event not found
             if (currEvent == null)
@@ -222,15 +227,15 @@ namespace Evention2.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
-            // Assign eventId to new state.
-            @event.OwnerId = currEvent.OwnerId;
+            // Update state.
+            currEvent.UpdateFromViewModel(e);
             if (ModelState.IsValid)
             {
-                db.Entry(@event).State = EntityState.Modified;
+                db.Entry(currEvent).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(@event);
+            return View(e);
         }
 
         // GET: Event/Delete/5

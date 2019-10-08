@@ -95,7 +95,8 @@ namespace Evention2.Controllers
             {
                 return HttpNotFound();
             }
-            return View(rate);
+            // Currently prohobiting rate modification.
+            return new HttpStatusCodeResult(403);
         }
 
         // POST: Rate/Edit/5
@@ -106,16 +107,19 @@ namespace Evention2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Event_id,Reviewer_id,Rating_Score,Comments")] Rate rate)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(rate).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(rate);
+            // Currently prohobiting rate modification.
+            return new HttpStatusCodeResult(403);
+            //if (ModelState.IsValid)
+            //{
+            //    db.Entry(rate).State = EntityState.Modified;
+            //    db.SaveChanges();
+            //    return RedirectToAction("Index");
+            //}
+            //return View(rate);
         }
 
         // GET: Rate/Delete/5
+        [Authorize(Roles="Administrator")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -133,6 +137,7 @@ namespace Evention2.Controllers
         // POST: Rate/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public ActionResult DeleteConfirmed(int id)
         {
             Rate rate = db.Rates.Find(id);

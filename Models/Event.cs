@@ -70,6 +70,40 @@ namespace Evention2.Models
             return builder.ToString();
         }
 
+        public void UpdateFromViewModel(EventCreateViewModel viewModel)
+        {
+            this.EventName = viewModel.EventName;
+            this.EventType = viewModel.EventType;
+            this.EventDesc = viewModel.EventDesc;
+            this.Phone = viewModel.Phone;
+            this.Street = viewModel.Street;
+            this.Surburb = viewModel.Surburb;
+            this.State = viewModel.State;
+            this.Email = viewModel.Email;
+            this.PostCode = viewModel.PostCode;
+            this.Start_date = viewModel.Start_date;
+            this.End_date = viewModel.End_date;
+        }
+
+        // Convert to EventCreateViewModel
+        public EventCreateViewModel ToCreateViewModel()
+        {
+            EventCreateViewModel viewModel = new EventCreateViewModel();
+            viewModel.EventId = this.EventId;
+            viewModel.Email = this.Email;
+            viewModel.EventDesc = this.EventDesc;
+            viewModel.EventName = this.EventName;
+            viewModel.EventType = this.EventType;
+            viewModel.Phone = this.Phone;
+            viewModel.Start_date = this.Start_date;
+            viewModel.End_date = this.End_date;
+            viewModel.Street = this.Street;
+            viewModel.Surburb = this.Surburb;
+            viewModel.State = this.State;
+            viewModel.PostCode = this.PostCode;
+            return viewModel;
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Rate> Rates { get; set; }
 

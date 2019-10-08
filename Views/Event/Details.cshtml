@@ -8,7 +8,8 @@
 <!--MapBox references-->
 <script src='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.js'></script>
 <link href='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.css' rel='stylesheet' />
-<script src="https://unpkg.com/@("@")mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
 <div>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb" style="background-color:rgba(0,0,0,0)">
@@ -34,7 +35,7 @@
     <hr />
     <div class="row">
         <div class="col-sm-12 col-md-4">
-            <img src="@Url.Content(Model.aEvent.PosterImg)" class="img-fluid"/>
+            <img src="@Url.Content(Model.aEvent.PosterImg)" class="img-fluid" />
             <h4>Rating: @ViewBag.AvgScore</h4>
             <h5>Description</h5>
             <p>@Html.DisplayFor(model => model.aEvent.EventDesc)</p>
@@ -119,43 +120,53 @@
 <div class="row">
     <div id='map' style='width: 100%; height: 450px;'></div>
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [144.9531077, -37.8261293],
-            zoom: 14
-        });
-        map.on('load', () => {
-            map.loadImage('/Content/img/cao.jpg', (error, image) => {
-                if (error) throw error;
-                map.addImage('cao', image);
-                map.addLayer({
-                    "id": "points",
-                    "type": "symbol",
-                    "source": {
-                        "type": "geojson",
-                        "data": {
-                            "type": "FeatureCollection",
-                            "features": [{
-                                "type": "Feature",
-                                "geometry": {
-                                    "type": "Point",
-                                    "coordinates": [144.9531077, -37.8261293]
-                                }
-                            }]
+        function initializeMap() {
+            mapboxgl.accessToken = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [144.9531077, -37.8261293],
+                zoom: 14
+            });
+            map.on('load', () => {
+                map.loadImage('/Content/img/cao.jpg', (error, image) => {
+                    if (error) throw error;
+                    map.addImage('cao', image);
+                    map.addLayer({
+                        "id": "points",
+                        "type": "symbol",
+                        "source": {
+                            "type": "geojson",
+                            "data": {
+                                "type": "FeatureCollection",
+                                "features": [{
+                                    "type": "Feature",
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [144.9531077, -37.8261293]
+                                    }
+                                }]
+                            }
+                        },
+                        "layout": {
+                            "icon-image": "cao",
+                            "icon-size": 0.4
                         }
-                    },
-                    "layout": {
-                        "icon-image": "cao",
-                        "icon-size": 0.4
-                    }
+                    });
                 });
             });
-        });
+            var geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: map,
+                marker: false,  // Do not use the default marker style
+            });
+            map.addControl(geocoder);
+        }
+        $(window).ready(() => {
+            initializeMap();
+        })
     </script>
 </div>
-<script src="~/Scripts/event_detail.js"></script>
 <div class="row my-3" style="display:block">
     @Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates, new ViewDataDictionary { { "eventId", Model.aEvent.EventId } })
 </div>
