@@ -113,6 +113,10 @@
 <h2>Location Map</h2>
 <div class="row">
     <div id='map' style='width: 100%; height: 450px;'></div>
+    <div id="map-overlay" style="position: absolute; top: 15px; left: 15px; padding: 10px; background-color: white;">
+        <button id="transitLayerButton" class="btn btn-outline-black"
+            onclick="setTransitPoints(token, m, addTransitPoints)">Transit Station</button>
+    </div>
     <script>
         function setMap(token, cord, mapReference) {
             console.log("initialization cord: " + cord);
@@ -160,6 +164,7 @@
             */
             m = map;
         }
+        
         function initMap(token, addr, mapReference) {
             queryAPI = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(addr) + '.json';
             console.log(queryAPI);
@@ -180,6 +185,71 @@
                 dataType: "json"
             });
         }
+        
+        function setTransitPoints(token, map, callback) {
+            mapBounds = map.getBounds();
+            bound = [mapBounds._sw.lng, mapBounds._sw.lat, mapBounds._ne.lng, mapBounds._ne.lat];
+            queryAPI = 'https://api.mapbox.com/geocoding/v5/mapbox.places/stop.json';
+            $.get({
+                url: queryAPI,
+                data: {
+                    "access_token": token,
+                    "bbox": bound.join(),
+                },
+                success: (res, status, xhr) => {
+                    features = res["features"]
+                    console.log(features.length + " fetched");
+                    busSet = []
+                    trainSet = []
+                    features.forEach(point => {
+                        pointType = point.properties.maki
+                        console.log(typeof (pointType));
+
+                        if (pointType === "bus") {
+                            busSet.push(point);
+                        } else if (pointType === "rail") {
+                            trainSet.push(point);
+                        }
+
+                        console.log("this feature: [" + pointType + ", " + point["geometry"] + "]");
+                    });
+                    console.log(trainSet, busSet);
+                    callback(trainSet, busSet);
+                }
+            })
+        }
+        
+        function addTransitPoints(rail, bus) {
+            console.log(rail);
+            // TODO: substitute image.
+            m.loadImage('ad0d1805jw1exthctrbgmj20go0gogmg.jpg', (error, image) => {
+                if (error) throw error;
+                m.addImage('yashi', image);
+                m.addLayer({
+                    "id": "transits",
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": rail
+                            /*[{
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": cord
+                                }
+                            }]*/
+                        }
+                    },
+                    "layout": {
+                        "icon-image": "yashi",
+                        "icon-size": 0.4
+                    }
+                });
+            });
+        }
+        
         $(window).ready(() => {
             token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
             var m;  // Reference of map.
