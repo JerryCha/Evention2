@@ -64,7 +64,7 @@
 
                 <dd>
                     @{
-                        string address = Model.aEvent.Street + ", " + Model.aEvent.Surburb + ", " + Model.aEvent.PostCode;
+    string address = Model.aEvent.Street + ", " + Model.aEvent.Surburb + ", " + Model.aEvent.PostCode;
                     }
                     @address
                 </dd>
@@ -105,27 +105,22 @@
         </div>
     </div>
 </div>
-<!--Initialize js environment in which stores detailed information of event.-->
-<script>
-    class Event {
-
-    }
-</script>
 
 <div class="row">
-    <!--<p>@Html.ActionLink("Send to my email", "ShareEvent", "Event", new { id = User.Identity.GetUserId()}, null)</p>-->
+    <!--<p>@Html.ActionLink("Send to my email", "ShareEvent", "Event", new { id = User.Identity.GetUserId() }, null)</p>-->
     <p data-target="#eventShareModal" data-toggle="modal"><a href="#">Share by email</a></p>
 </div>
 <h2>Location Map</h2>
 <div class="row">
     <div id='map' style='width: 100%; height: 450px;'></div>
     <script>
-        function initializeMap() {
-            mapboxgl.accessToken = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
+        function setMap(token, cord) {
+            console.log("initialization cord: " + cord);
+            mapboxgl.accessToken = token;
             var map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
-                center: [144.9531077, -37.8261293],
+                center: cord,
                 zoom: 14
             });
             map.on('load', () => {
@@ -143,7 +138,7 @@
                                     "type": "Feature",
                                     "geometry": {
                                         "type": "Point",
-                                        "coordinates": [144.9531077, -37.8261293]
+                                        "coordinates": cord
                                     }
                                 }]
                             }
@@ -155,16 +150,39 @@
                     });
                 });
             });
+            /*
             var geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 mapboxgl: map,
                 marker: false,  // Do not use the default marker style
             });
             map.addControl(geocoder);
+            */
+        }
+        function initMap(token, addr) {
+            queryAPI = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(addr) + '.json';
+            console.log(queryAPI);
+            cord = []
+            $.get({
+                url: queryAPI,
+                data: {
+                    "access_token": token,
+                    "country": "au",
+                    "limit": 1
+                },
+                success: (res, status, xhr) => {
+                    console.log(res);
+                    cord = res["features"][0]["center"];
+                    console.log(cord);
+                    setMap(token, cord);
+                },
+                dataType: "json"
+            });
         }
         $(window).ready(() => {
-            initializeMap();
-        })
+            token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
+            initMap(token, "@address");
+        });
     </script>
 </div>
 <div class="row my-3" style="display:block">
