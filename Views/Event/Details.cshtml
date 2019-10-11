@@ -113,8 +113,9 @@
 <h2>Location Map</h2>
 <div class="row">
     <div id='map' style='width: 100%; height: 450px;'></div>
-    <div id="map-overlay" style="position: absolute; top: 15px; left: 15px; padding: 10px; background-color: white;">
-        <button id="transitLayerButton" class="btn btn-outline-black"
+    <div id="map-overlay" style="position: absolute; margin: 10px; padding: 5px; background-color: white;">
+        <h4>See also</h4>
+        <button id="transitLayerButton" class="btn btn-outline-dark"
             onclick="setTransitPoints(token, m, addTransitPoints)">Transit Station</button>
     </div>
     <script>
@@ -148,8 +149,11 @@
                             }
                         },
                         "layout": {
-                            "icon-image": "cao",
-                            "icon-size": 0.4
+                            "icon-image": ["concat", ["get", "icon"], "cao"],
+                            "icon-size": 0.4,
+                            //"text-field": "@address",
+                            "text-radial-offset": 0.5,
+                            "text-justify": "left",
                         }
                     });
                 });
@@ -199,32 +203,21 @@
                 success: (res, status, xhr) => {
                     features = res["features"]
                     console.log(features.length + " fetched");
-                    busSet = []
-                    trainSet = []
+                    stops = [];
                     features.forEach(point => {
-                        pointType = point.properties.maki
-                        console.log(typeof (pointType));
-
-                        if (pointType === "bus") {
-                            busSet.push(point);
-                        } else if (pointType === "rail") {
-                            trainSet.push(point);
-                        }
-
-                        console.log("this feature: [" + pointType + ", " + point["geometry"] + "]");
+                        pointType = point.properties.maki;
+                        if (pointType === "bus" || pointType === "rail") 
+                            stops.push(point);
                     });
-                    console.log(trainSet, busSet);
-                    callback(trainSet, busSet);
+                    callback(stops);
                 }
             })
         }
         
-        function addTransitPoints(rail, bus) {
-            console.log(rail);
-            // TODO: substitute image.
-            m.loadImage('ad0d1805jw1exthctrbgmj20go0gogmg.jpg', (error, image) => {
+        function addTransitPoints(stops) {
+            m.loadImage("/Content/img/ri.jpg", (error, image) => {
                 if (error) throw error;
-                m.addImage('yashi', image);
+                m.addImage('transitStop', image);
                 m.addLayer({
                     "id": "transits",
                     "type": "symbol",
@@ -232,19 +225,16 @@
                         "type": "geojson",
                         "data": {
                             "type": "FeatureCollection",
-                            "features": rail
-                            /*[{
-                                "type": "Feature",
-                                "geometry": {
-                                    "type": "Point",
-                                    "coordinates": cord
-                                }
-                            }]*/
+                            "features": stops
+                            /*[{"type": "Feature", "geometry": {"type": "Point", "coordinates": cord}}]*/
                         }
                     },
                     "layout": {
-                        "icon-image": "yashi",
-                        "icon-size": 0.4
+                        "icon-image": "transitStop",
+                        "icon-size": 0.4,
+                        "text-field": ["get", "description"],
+                        "text-radial-offset": 0.5,
+                        "text-justify": "auto",
                     }
                 });
             });
@@ -254,7 +244,6 @@
             token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
             var m;  // Reference of map.
             initMap(token, "@address", m);
-            
         });
     </script>
 </div>

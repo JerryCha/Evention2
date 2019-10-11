@@ -253,6 +253,11 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\img\610d6911ly1fl7q6b07qyj20b40b4tc3.jpg" />
+    <Content Include="Content\img\70634057gy1fw7seyf81mj20bx0blwex.jpg" />
+    <Content Include="Content\img\cao.jpg" />
+    <Content Include="Content\img\ri.jpg" />
+    <Content Include="Content\img\TIM20190829180638.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
