@@ -5,6 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Ical.Net;
+using Ical.Net.CalendarComponents;
+using Ical.Net.DataTypes;
+using Ical.Net.Serialization;
+using System.Text;
 
 namespace Evention2.Services
 {
@@ -34,8 +39,25 @@ namespace Evention2.Services
                 var from = new EmailAddress("share@evention2.com");
                 var subject = "You are shared an event - " + e.EventName;
                 var m = MailHelper.CreateSingleEmail(from, to, subject, content, content);
+                m.AddAttachment(e.EventName + ".ics", GenerateICSBase64(e));
                 var response = client.SendEmailAsync(m);
             }
+        }
+
+        private string GenerateICSBase64(Event e)
+        {
+            var calEvent = new CalendarEvent {
+                Start = new CalDateTime(e.Start_date),
+                End = new CalDateTime(e.End_date),
+                Summary = e.EventName,
+                Description = e.EventDesc,
+                Location = e.GetAddress()
+            };
+            var cal = new Calendar();
+            cal.Events.Add(calEvent);
+
+            var serialzedCal = new CalendarSerializer().SerializeToString(cal);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(serialzedCal));
         }
     }
 }

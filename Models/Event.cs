@@ -52,6 +52,10 @@ namespace Evention2.Models
         [Required]
         public string PostCode { get; set; }
 
+        public string GetAddress()
+        {
+            return Street + ", " + Surburb + ", " + State + " " + PostCode;
+        }
 
         public override string ToString()
         {
