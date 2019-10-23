@@ -234,7 +234,6 @@
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MyController.cs" />
     <Compile Include="Controllers\RateController.cs" />
     <Compile Include="Models\RateViewModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -247,7 +246,6 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JoinedViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\MyCenterViewModel.cs" />
     <Compile Include="Models\Rate.cs" />
     <Compile Include="Models\StatisticsModel.cs" />
     <Compile Include="Models\Type.cs" />
@@ -340,6 +338,8 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -423,15 +423,11 @@
     <Content Include="Views\Rate\_EventRates.cshtml" />
     <Content Include="Views\Manage\MyProfile.cshtml" />
     <Content Include="Views\Manage\EditProfile.cshtml" />
-    <Content Include="Views\My\Create.cshtml" />
-    <Content Include="Views\My\Delete.cshtml" />
-    <Content Include="Views\My\Details.cshtml" />
-    <Content Include="Views\My\Edit.cshtml" />
-    <Content Include="Views\My\Index.cshtml" />
     <Content Include="Views\Event\_Share.cshtml" />
     <Content Include="Views\Rate\Create.cshtml" />
     <Content Include="Views\Rate\Index.cshtml" />
     <Content Include="Views\Rate\Delete.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\poster\" />
