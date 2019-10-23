@@ -8,8 +8,8 @@
 <!--MapBox references-->
 <script src='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.js'></script>
 <link href='https://api.mapbox.com/mapbox-gl-js/v1.3.2/mapbox-gl.css' rel='stylesheet' />
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.min.js'></script>
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css' type='text/css' />
 <div>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb" style="background-color:rgba(0,0,0,0)">
@@ -25,9 +25,12 @@
         <h2>@Html.DisplayFor(model => model.aEvent.EventName)</h2>
     </div>
     <div class="col-md-2">
-        <p>
-            @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId }, new { @class = "btn btn-outline-primary" })
-        </p>
+        @if (User.Identity.GetUserId() == Model.aEvent.OwnerId)
+        {
+            <p>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId }, new { @class = "btn btn-outline-primary" })
+            </p>
+        }
     </div>
 </div>
 
@@ -64,7 +67,7 @@
 
                 <dd>
                     @{
-    string address = Model.aEvent.Street + ", " + Model.aEvent.Surburb + " " + Model.aEvent.State + " " + Model.aEvent.PostCode;
+                        string address = Model.aEvent.Street + ", " + Model.aEvent.Surburb + " " + Model.aEvent.State + " " + Model.aEvent.PostCode;
                     }
                     @address
                 </dd>
@@ -113,13 +116,16 @@
 <h2>Location Map</h2>
 <div class="row">
     <div id='map' style='width: 100%; height: 450px;'></div>
+    <!--
     <div id="map-overlay" style="position: absolute; margin: 10px; padding: 5px; background-color: white;">
         <h4>See also</h4>
         <button id="transitLayerButton" class="btn btn-outline-dark"
-            onclick="setTransitPoints(token, m, addTransitPoints)">Transit Station</button>
-    </div>
+                onclick="setTransitPoints(token, m, addTransitPoints)">
+            Transit Station
+        </button>
+    </div>-->
     <script>
-        function setMap(token, cord, mapReference) {
+        function setMap(token, cord) {
             console.log("initialization cord: " + cord);
             mapboxgl.accessToken = token;
             var map = new mapboxgl.Map({
@@ -128,8 +134,16 @@
                 center: cord,
                 zoom: 14
             });
+            var md = new MapboxDirections({
+                accessToken: token,
+                unit: 'metric',
+                controls: { inputs: true },
+                //placeholderDeatination: "@address"
+            });
+            
             map.on('load', () => {
-                map.loadImage('/Content/img/cao.jpg', (error, image) => {
+                md.setDestination("@address");
+                map.loadImage('/Content/img/target_loc_128.png', (error, image) => {
                     if (error) throw error;
                     map.addImage('cao', image);
                     map.addLayer({
@@ -151,24 +165,23 @@
                         "layout": {
                             "icon-image": ["concat", ["get", "icon"], "cao"],
                             "icon-size": 0.4,
-                            //"text-field": "@address",
                             "text-radial-offset": 0.5,
                             "text-justify": "left",
                         }
                     });
                 });
             });
-            /*
-            var geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: map,
-                marker: false,  // Do not use the default marker style
+            md.on('origin', () => {
+                $.get({
+                    url: "https://api.mapbox.com/geocoding/v5/mapbox.places/" + md.getOrigin()["geometry"]["coornidates"]
+                })
+                map.removeLayer('points');
             });
-            map.addControl(geocoder);
-            */
+            map.addControl(md, 'top-left');
+            mapd = md;
             m = map;
         }
-        
+
         function initMap(token, addr, mapReference) {
             queryAPI = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(addr) + '.json';
             console.log(queryAPI);
@@ -189,11 +202,11 @@
                 dataType: "json"
             });
         }
-        
+
         function setTransitPoints(token, map, callback) {
             mapBounds = map.getBounds();
             bound = [mapBounds._sw.lng, mapBounds._sw.lat, mapBounds._ne.lng, mapBounds._ne.lat];
-            queryAPI = 'https://api.mapbox.com/geocoding/v5/mapbox.places/stop.json';
+            queryAPI = 'https://api.mapbox.com/geocoding/v5/mapbox.places/bus.json';
             $.get({
                 url: queryAPI,
                 data: {
@@ -203,19 +216,22 @@
                 success: (res, status, xhr) => {
                     features = res["features"]
                     console.log(features.length + " fetched");
+                    console.log(features);
                     stops = [];
                     features.forEach(point => {
                         pointType = point.properties.maki;
-                        if (pointType === "bus" || pointType === "rail") 
+                        if (pointType === "bus" || pointType === "rail")
                             stops.push(point);
                     });
                     callback(stops);
                 }
             })
         }
-        
+
         function addTransitPoints(stops) {
-            m.loadImage("/Content/img/ri.jpg", (error, image) => {
+            console.log("queried transit station");
+            console.log(stops);
+            m.loadImage("/Content/img/transit_loc_192h.png", (error, image) => {
                 if (error) throw error;
                 m.addImage('transitStop', image);
                 m.addLayer({
@@ -231,7 +247,7 @@
                     },
                     "layout": {
                         "icon-image": "transitStop",
-                        "icon-size": 0.4,
+                        "icon-size": 0.3,
                         "text-field": ["get", "description"],
                         "text-radial-offset": 0.5,
                         "text-justify": "auto",
@@ -239,10 +255,11 @@
                 });
             });
         }
-        
+
         $(window).ready(() => {
             token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
             var m;  // Reference of map.
+            var mapd; // Reference of mapbox direction
             initMap(token, "@address", m);
         });
     </script>

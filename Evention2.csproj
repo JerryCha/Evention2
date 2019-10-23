@@ -276,7 +276,10 @@
     <Content Include="Content\img\70634057gy1fw7seyf81mj20bx0blwex.jpg" />
     <Content Include="Content\img\cao.jpg" />
     <Content Include="Content\img\ri.jpg" />
+    <Content Include="Content\img\target_loc_128.png" />
     <Content Include="Content\img\TIM20190829180638.png" />
+    <Content Include="Content\img\transit_loc.png" />
+    <Content Include="Content\img\transit_loc_192h.png" />
     <Content Include="Content\other\ics_template.txt" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />

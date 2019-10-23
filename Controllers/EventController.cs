@@ -136,6 +136,10 @@ namespace Evention2.Controllers
 
             if (ModelState.IsValid)
             {
+                if (@event.Start_date > DateTime.Now && @event.End_date < @event.Start_date)
+                {
+                    return View(@event);
+                }
                 var fileLoc = SavePoster(Request.Files[0]);
                 Event newEvent = @event.ToEvent();
                 var userId = User.Identity.GetUserId();
@@ -238,6 +242,11 @@ namespace Evention2.Controllers
                 User.IsInRole("Administrator") == false))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+            }
+            // Date check
+            if (e.Start_date > DateTime.Now && e.End_date < e.Start_date)
+            {
+                return View(e);
             }
             // Update state.
             currEvent.UpdateFromViewModel(e);

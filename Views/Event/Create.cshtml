@@ -137,7 +137,6 @@
                         dateFormat: 'yy-mm-dd',
                         minDate: today,
                         onSelect: function (selectedDate) {
-                            console.log(selectedDate);
                             $('#datebox2').datepicker("setDate", addDays(selectedDate, 2));
                             $('#datebox2').datepicker("option", "minDate", addDays(selectedDate, 0));
                         }
