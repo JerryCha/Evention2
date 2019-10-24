@@ -1,0 +1,40 @@
+﻿@model Evention2.Models.TicketOrderView
+@{
+    ViewBag.Title = "Buy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <h2>@Model.EventName</h2>
+</div>
+
+<div class="row">
+    <h3>Choose your ticket</h3>
+</div>
+@foreach (var ticket in Model.Tickets)
+{
+<div class="row border mx-auto my-2 py-2" v-for="ticket in tickets">
+    <div class="col-md-8">
+        <h4>@ticket.Sku_Name</h4>
+        <p>@ticket.Sku_Desc</p>
+    </div>
+    <div class="col-md-2">
+        <p>AU$ @ticket.Price</p>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-light" type="button">-</button>
+            </span>
+            <input type="text" class="form-control" value="0">
+            <span class="input-group-btn">
+                <button class="btn btn-light" type="button">+</button>
+            </span>
+        </div>
+    </div>
+</div>
+}
+<div class="d-flex justify-content-end align-items-center">
+    <h4 class="mx-2">Total: AU$ 1145.14</h4>
+    <button class="btn btn-primary mx-2" v-on:click="placeOrder">Place Order</button>
+</div>

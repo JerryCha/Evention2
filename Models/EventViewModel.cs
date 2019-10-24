@@ -10,13 +10,15 @@ namespace Evention2.Models
 
     public class EventDetailViewModel
     {
-        public EventDetailViewModel(Event aEvent, List<EventRate> eventRates)
+        public EventDetailViewModel(Event aEvent, List<EventRate> eventRates, List<Ticket> tickets)
         {
             this.aEvent = aEvent;
             this.eventRates = eventRates;
+            this.tickets = tickets;
         }
         public Event aEvent { get; set; }
         public List<EventRate> eventRates { get; set; }
+        public List<Ticket> tickets { get; set; }
     }
 
     public class EventCreateViewModel

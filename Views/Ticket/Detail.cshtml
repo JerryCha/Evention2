@@ -1,0 +1,32 @@
+﻿@model Evention2.Models.TicketOrderView
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="d-flex justify-content-between">
+        <h2>@Model.EventName Ticket Management</h2>
+        <button class="btn btn-outline-info"> Back to event page</button>
+    </div>
+
+@foreach (var ticket in Model.Tickets)
+{
+    <div class="row border justify-content-between mx-auto my-2 py-2" v-for="ticket in tickets">
+        <div class="col-md-6">
+            <h4>@ticket.Sku_Name</h4>
+            <p>@ticket.Sku_Desc</p>
+        </div>
+        <div class="col-md-3">
+            <p>AU$ @ticket.Price</p>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <button class="btn btn-primary mx-2" type="button">Edit</button>
+                <button class="btn btn-danger" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+<div class="row mx-auto">
+    <button class="btn btn-outline-secondary">New SKU</button>
+</div>

@@ -64,7 +64,8 @@ namespace Evention2.Controllers
                 avgScore /= eventRates.Count();
                 ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             }
-            EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
+            List<Ticket> tickets = db.Ticket.Where(r => r.Event_Id == id).ToList();
+            EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates, tickets);
             // Apply a new thread to handle visit logging task.
             new Thread(() => {
                     EventVisitLogServices.LogVisit(@event.aEvent.EventId, 

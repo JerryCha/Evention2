@@ -51,16 +51,6 @@ namespace Evention2.Controllers
             }
         }
 
-        [Authorize]
-        // GET: /Manage/MyProfile
-        public ActionResult MyProfile()
-        {
-            var userId = User.Identity.GetUserId();
-            Entity profileHelper = new Entity();
-            UserProfile profile = profileHelper.UserProfiles.Find(userId);
-            return View(profile);
-        }
-
         //
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)

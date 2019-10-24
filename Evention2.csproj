@@ -234,8 +234,10 @@
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MyController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\RateController.cs" />
+    <Compile Include="Controllers\TicketController.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\RateViewModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -247,9 +249,11 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JoinedViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\MyCenterViewModel.cs" />
     <Compile Include="Models\Rate.cs" />
     <Compile Include="Models\StatisticsModel.cs" />
+    <Compile Include="Models\TicketOrder.cs" />
+    <Compile Include="Models\TicketOrderView.cs" />
+    <Compile Include="Models\Tickets.cs" />
     <Compile Include="Models\Type.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EmailServices.cs" />
@@ -423,18 +427,16 @@
     <Content Include="Views\Rate\_EventRates.cshtml" />
     <Content Include="Views\Manage\MyProfile.cshtml" />
     <Content Include="Views\Manage\EditProfile.cshtml" />
-    <Content Include="Views\My\Create.cshtml" />
-    <Content Include="Views\My\Delete.cshtml" />
-    <Content Include="Views\My\Details.cshtml" />
-    <Content Include="Views\My\Edit.cshtml" />
-    <Content Include="Views\My\Index.cshtml" />
     <Content Include="Views\Event\_Share.cshtml" />
     <Content Include="Views\Rate\Create.cshtml" />
     <Content Include="Views\Rate\Index.cshtml" />
     <Content Include="Views\Rate\Delete.cshtml" />
+    <Content Include="Views\Ticket\Buy.cshtml" />
+    <Content Include="Views\Ticket\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\poster\" />
+    <Folder Include="Views\Order\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
