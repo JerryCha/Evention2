@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 
 namespace Evention2.Controllers
 {
@@ -13,17 +14,18 @@ namespace Evention2.Controllers
     {
         private static Entity db = new Entity();
 
-        public ActionResult Serial()
-        {
-            return Json(new { data = db.Ticket.ToList() }, JsonRequestBehavior.AllowGet);
-        }
-
         public ActionResult Buy(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             var @event = db.Events.Find(id);
-            List<Ticket> tickets = db.Ticket.Where(r => r.Event_Id == id).ToList();
+            var ticketSet = db.Ticket.Where(r => r.Event_Id == id).ToList();
+            List<TicketPurchaseModel> tickets = new List<TicketPurchaseModel>();
+            ticketSet.ForEach(t =>
+            {
+                var thisTicket = new TicketPurchaseModel(t);
+                tickets.Add(thisTicket);
+            });
             return View(new TicketOrderView(@event.EventName, tickets));
         }
 
@@ -45,8 +47,7 @@ namespace Evention2.Controllers
                 var @event = db.Events.Find(id);
                 if (@event.OwnerId != User.Identity.GetUserId())
                     return new HttpStatusCodeResult(System.Net.HttpStatusCode.Unauthorized);
-                TicketOrderView v = new TicketOrderView(@event.EventName, db.Ticket.Where(r => r.Event_Id == id).ToList());
-                return Json(new { name = v.EventName, tickets = v.Tickets }, JsonRequestBehavior.AllowGet);
+                return Json(new { name = @event.EventName, tickets = db.Ticket.Where(r => r.Event_Id == id).ToList() }, JsonRequestBehavior.AllowGet);
             }
             return Json("failed");
         }
@@ -56,7 +57,14 @@ namespace Evention2.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(ticket).State = System.Data.Entity.EntityState.Modified;
+                var currSku = db.Ticket.AsNoTracking().Where(t => t.Sku_Id == ticket.Event_Id).First();
+                if (currSku.Event_Id != ticket.Event_Id)
+                {
+                    Response.StatusCode = 403;  // Forbbiden
+                    return Json("Invalid event id");
+                }
+                //db.Ticket.Attach(ticket);
+                db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
                 return Json("ok");
             }

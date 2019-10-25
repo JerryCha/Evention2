@@ -439,6 +439,7 @@
   <ItemGroup>
     <Folder Include="Content\poster\" />
     <Folder Include="Views\Order\" />
+    <Folder Include="Views\Ticketss\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,7 +12,7 @@ namespace Evention2.Models
             : base("name=DefaultConnection")
         {
         }
-
+        
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<Type> Types { get; set; }

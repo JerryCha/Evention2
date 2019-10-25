@@ -7,9 +7,9 @@ namespace Evention2.Models
 {
     public class TicketOrderView
     {
-        public List<Ticket> Tickets { get; set; }
+        public List<TicketPurchaseModel> Tickets { get; set; }
         public string EventName { get; set; }
-        public TicketOrderView(string EventName, List<Ticket> Tickets)
+        public TicketOrderView(string EventName, List<TicketPurchaseModel> Tickets)
         {
             this.EventName = EventName;
             this.Tickets = Tickets;
