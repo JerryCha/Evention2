@@ -111,12 +111,12 @@
         </div>
     </div>
 </div>
-
+@if (User.Identity.IsAuthenticated)
+{
 <div class="row">
-    <!--<p>@Html.ActionLink("Send to my email", "ShareEvent", "Event", new { id = User.Identity.GetUserId() }, null)</p>-->
     <p data-target="#eventShareModal" data-toggle="modal"><a href="#">Share by email</a></p>
 </div>
-
+}
 <div class="row">
     <h2>Ticketing Information</h2>
 </div>
@@ -291,5 +291,7 @@ else
     @Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates, new ViewDataDictionary { { "eventId", Model.aEvent.EventId } })
 </div>
 
-
+@if (User.Identity.IsAuthenticated)
+{ 
 @Html.Partial("~/Views/Event/_Share.cshtml", Model.aEvent)
+}

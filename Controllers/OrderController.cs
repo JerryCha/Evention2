@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -37,8 +38,9 @@ namespace Evention2.Controllers
 
         // POST: Order/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include = "Order_Id,User_Id,Pay_Method,Total_Price,Sku_Id,Order_Id")] PlaceOrderModel Order)
+        public ActionResult Place([Bind(Include = "Order_Id,User_Id,Pay_Method,Total_Price,Sku_Id,Order_Id")] PlaceOrderModel Order)
         {
+            Debug.WriteLine("Acknowledged");
             return Json("114514");
         }
 
