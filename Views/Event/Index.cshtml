@@ -56,10 +56,8 @@
         <td>
             @if (User.IsInRole("Administrator"))
             {
-                @Html.ActionLink("Edit", "Edit", new { id = item.EventId })
-                @Html.DisplayText("|")
-                @Html.ActionLink("Delete", "Delete", new { id = item.EventId })
-                @Html.DisplayText("|")
+                @Html.ActionLink("Edit ", "Edit", new { id = item.EventId });
+                @Html.ActionLink("Delete ", "Delete", new { id = item.EventId });
             }
 
             @Html.ActionLink("Details", "Details", new { id = item.EventId })

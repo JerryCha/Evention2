@@ -201,8 +201,6 @@ else
                 map.removeLayer('points');
             });
             map.addControl(md, 'top-left');
-            mapd = md;
-            m = map;
         }
 
         function initMap(token, addr, mapReference) {
@@ -280,9 +278,8 @@ else
         }
 
         $(window).ready(() => {
+            m = {};
             token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
-            var m;  // Reference of map.
-            var mapd; // Reference of mapbox direction
             initMap(token, "@address", m);
         });
     </script>

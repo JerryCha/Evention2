@@ -20,6 +20,8 @@ namespace Evention2.Models
         [StringLength(16)]
         public string Pay_Method { get; set; }
 
+        [Required]
+        [Range(0, float.MaxValue)]
         public double Total_Price { get; set; }
     }
 }

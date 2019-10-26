@@ -258,7 +258,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EmailServices.cs" />
     <Compile Include="Services\EventLogServices.cs" />
-    <Compile Include="Services\ImageManagementService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

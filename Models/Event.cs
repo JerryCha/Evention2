@@ -57,6 +57,9 @@ namespace Evention2.Models
             return Street + ", " + Surburb + ", " + State + " " + PostCode;
         }
 
+        /**
+         * Overriden of ToString
+         */
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
@@ -74,6 +77,9 @@ namespace Evention2.Models
             return builder.ToString();
         }
 
+        /**
+         * Convert to EventCreateViewModel
+         */
         public void UpdateFromViewModel(EventCreateViewModel viewModel)
         {
             this.EventName = viewModel.EventName;

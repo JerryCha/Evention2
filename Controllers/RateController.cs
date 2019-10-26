@@ -18,6 +18,9 @@ namespace Evention2.Controllers
         private Entity db = new Entity();
 
         // GET: Rate
+        /**
+         * Only administrator could access and delete.
+         */
         [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
@@ -30,6 +33,9 @@ namespace Evention2.Controllers
         }
 
         // GET: Rate/Details/5
+        /**
+         * Prohibit the access to a particular rate's detail page.
+         */
         public ActionResult Details(int? id)
         {
             // TODO: Reimplement.
@@ -37,6 +43,9 @@ namespace Evention2.Controllers
         }
 
         // GET: Rate/Create
+        /**
+         * Normally, enter from event page.
+         */
         public ActionResult Create(int? eventId)
         {
             if (eventId == null)
@@ -55,8 +64,9 @@ namespace Evention2.Controllers
         }
 
         // POST: Rate/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        /**
+         * Post review.
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(int eventId, [Bind(Include = "Rating_Score,Comments")] RateCreateViewModel rate)
@@ -84,6 +94,9 @@ namespace Evention2.Controllers
         }
 
         // GET: Rate/Edit/5
+        /**
+         * Currently prohobiting rate modification.
+         */
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -95,19 +108,16 @@ namespace Evention2.Controllers
             {
                 return HttpNotFound();
             }
-            // Currently prohobiting rate modification.
             return new HttpStatusCodeResult(403);
         }
 
         // POST: Rate/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // Currently prohobiting rate modification.
         [Authorize(Roles="Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Event_id,Reviewer_id,Rating_Score,Comments")] Rate rate)
         {
-            // Currently prohobiting rate modification.
             return new HttpStatusCodeResult(403);
             //if (ModelState.IsValid)
             //{

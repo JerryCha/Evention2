@@ -18,40 +18,46 @@ namespace Evention2.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            var @event = db.Events.Find(id);
-            var ticketSet = db.Ticket.Where(r => r.Event_Id == id).ToList();
-            List<TicketPurchaseModel> tickets = new List<TicketPurchaseModel>();
-            ticketSet.ForEach(t =>
-            {
-                var thisTicket = new TicketPurchaseModel(t);
-                tickets.Add(thisTicket);
-            });
-            return View(new TicketOrderView(@event.EventName, tickets));
+            ViewBag.event_id = id;
+            return View();
         }
 
+        /**
+         * Retrieve the detail page.
+         */
         public ActionResult Detail(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             var e = db.Events.Find(id);
             if (e == null)
-                new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
+            if (e.OwnerId != User.Identity.GetUserId())
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.Unauthorized);
             ViewBag.event_id = id;
             return View();
         }
 
+        /**
+         * Retrieve all ticket sku of an event.
+         * This is accessed by ajax.
+         */
+        [HttpPost]
         public ActionResult Get(int? id)
         {
             if (id != null && id > 0)
             {
                 var @event = db.Events.Find(id);
-                if (@event.OwnerId != User.Identity.GetUserId())
-                    return new HttpStatusCodeResult(System.Net.HttpStatusCode.Unauthorized);
+                if (@event == null)
+                    return Json("Not exist event id");
                 return Json(new { name = @event.EventName, tickets = db.Ticket.Where(r => r.Event_Id == id).ToList() }, JsonRequestBehavior.AllowGet);
             }
             return Json("failed");
         }
 
+        /**
+         * Editing sku. Accessed by ajax.
+         */
         [HttpPost]
         public ActionResult Edit([Bind(Include = "Sku_Id,Sku_Name,Sku_Desc,Event_Id,Price")]Ticket ticket)
         {
@@ -70,14 +76,18 @@ namespace Evention2.Controllers
             }
             return Json(ticket);
         }
+        /*
         public ActionResult Create(int? id)
         {
             var @event = db.Events.Find(id);
             if (@event.OwnerId != User.Identity.GetUserId())
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.Unauthorized);
             return View(new TicketOrderView(@event.EventName, null));
-        }
+        }*/
 
+         /**
+         * Creating sku. Accessed by ajax.
+         */
         [HttpPost]
         public ActionResult Create([Bind(Include = "Sku_Id,Sku_Name,Sku_Desc,Event_Id,Price")]Ticket ticket)
         {
@@ -90,6 +100,9 @@ namespace Evention2.Controllers
             return Json("failed");  // TODO: Change proper response.
         }
 
+        /**
+         * Deleting sku. Accessed by ajax.
+         */
         [ActionName("Delete")]
         [HttpPost]
         public ActionResult Delete(int? id)

@@ -42,6 +42,9 @@ namespace Evention2.Models
 
         public int Qty { get; set; }
 
+        /**
+         * Constructor with parameter ticket of class Ticket.
+         */
         public TicketPurchaseModel(Ticket t)
         {
             this.Sku_Id = t.Sku_Id;

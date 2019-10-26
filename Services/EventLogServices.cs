@@ -14,6 +14,10 @@ namespace Evention2.Services
     public static class EventVisitLogServices
     {
         private static Entity dbHelper = new Entity();
+        /**
+         * Logging visitor's ip, user id, event id to database.
+         * For statistics purpose.
+         */
         public static void LogVisit(int EventId, string IpAddr, string ViewerId = null)
         {
             Debug.WriteLine(string.Format("EventId: {0}, IP Address: {1}, viewerId: {2}", EventId, IpAddr, ViewerId));

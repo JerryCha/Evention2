@@ -24,6 +24,9 @@ namespace Evention2.Models
         }
     }
 
+    /**
+     * Model for View EventRates
+     */
     public partial class EventRate
     {
         [Key]

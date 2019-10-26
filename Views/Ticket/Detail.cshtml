@@ -7,7 +7,7 @@
 <div id="app">
     <div class="d-flex justify-content-between">
         <h2>{{name}} Ticket Management</h2>
-        <button class="btn btn-outline-info"> Back to event page</button>
+        <p> <a class="btn btn-outline-info" href="/Event/Details/@ViewBag.event_id">Back to event page</a></p>
     </div>
     <div class="row border justify-content-between mx-auto my-2 py-2" v-for="ticket in tickets">
         <div class="col-md-6" v-if="!ticket.isEditing">
