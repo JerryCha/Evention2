@@ -1,0 +1,89 @@
+﻿@model Evention2.Models.TicketOrderView
+@{
+    ViewBag.Title = "Buy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <script src="~/Scripts/vue.js"></script>
+    <div id="app">
+        <div class="row">
+            <h2>{{name}}</h2>
+        </div>
+
+        <div class="row">
+            <h3>Choose your ticket</h3>
+        </div>
+        <form>
+            <div class="row border mx-auto my-2 py-2" v-for="ticket in tickets">
+                <div class="col-md-8">
+                    <h4>{{ticket.Sku_Name}}</h4>
+                    <p>{{ ticket.Sku_Desc}}</p>
+                </div>
+                <div class="col-md-2">
+                    <p>AU$ {{ticket.Price}}</p>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-group">
+                        <label for="Qty" class="control-label">Quantity</label>
+                        <input class="form-control" v-model="ticket.Qty" type="number" v-on:input="updateTotalPrice(ticket)"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-check-inline">
+                    <input class="form-check-input" type="radio" name="VisaRadio" value="Visa" v-model="Pay_Method" />
+                    <label class="form-check-label" for="Pay_Method">Visa</label>
+                </div>
+                <div class="form-check-inline">
+                    <input class="form-check-input" type="radio" name="MasterCardRadio" value="MasterCard" v-model="Pay_Method" />
+                    <label class="form-check-label" for="Pay_Method">MasterCard</label>
+                </div>
+            </div>
+        </form>
+
+                    <div class="d-flex justify-content-end align-items-center">
+                        <h4 class="mx-2">Total: AU$ {{Total_Price}}</h4>
+                        <button class="btn btn-primary mx-2" v-on:click="placeOrder()">Place Order</button>
+                    </div>
+    </div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            name: "",
+            Pay_Method: "",
+            tickets: [],
+            Total_Price: 0.00
+        },
+        method: {
+            placeOrder: function () {
+                console.log("order placed");
+            },
+            updateTotalPrice: function (ticket) {
+                total = 0;
+                _tickets = this.tickets.filter((val) => { return val.Qty > 0; });
+                _tickets.forEach((t) => {
+                    total += t.Qty * t.Price;
+                });
+                Vue.set(this, "Total_Price", total);
+            }
+        },
+        beforeCreate: function() {
+             $.ajax({
+                    type: "POST",
+                    url: "/Ticket/Get/@ViewBag.event_id",
+                    data: {},
+                 success: (res, status, xhr) => {
+                     // status === "success"
+                     //console.log(res);
+                     //console.log("response:" + res["name"] + ", " + res["tickets"]);
+                     this.name = res["name"];
+                     this.tickets = res["tickets"];
+                     this.tickets.forEach(ticket => {
+                         ticket["Qty"] = 0;
+                     });
+                 }
+            })
+        }
+    });
+</script>

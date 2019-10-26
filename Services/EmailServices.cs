@@ -15,7 +15,7 @@ namespace Evention2.Services
 {
     public class EmailServices
     {
-
+        // API KEY of SendGrid
         private const string API_KEY = "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";
         private SendGridClient client;
 
@@ -26,6 +26,9 @@ namespace Evention2.Services
             dbHelper = new Entity();
         }
 
+        /**
+         * Sharing event by email service.
+         */
         public void ShareByEmail(string emailAddr, int eId)
         {
             Event e = dbHelper.Events.Find(eId);
@@ -44,6 +47,9 @@ namespace Evention2.Services
             }
         }
 
+        /**
+         * Generating Calendar file (.ics)
+         */
         private string GenerateICSBase64(Event e)
         {
             var calEvent = new CalendarEvent {

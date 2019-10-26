@@ -6,23 +6,30 @@ namespace Evention2.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    /**
-     * Enumerate the type of events.
-     */
-    public partial class Type
+    public partial class Ticket
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Type()
+        public Ticket()
         {
-            Events = new HashSet<Event>();
+            TicketOrders = new HashSet<TicketOrder>();
         }
 
-        public int TypeId { get; set; }
+        [Key]
+        public int Sku_Id { get; set; }
+
+        public int Event_Id { get; set; }
 
         [Required]
-        public string TypeName { get; set; }
+        [StringLength(32)]
+        public string Sku_Name { get; set; }
+
+        [Required]
+        [StringLength(64)]
+        public string Sku_Desc { get; set; }
+
+        public double Price { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Event> Events { get; set; }
+        public virtual ICollection<TicketOrder> TicketOrders { get; set; }
     }
 }

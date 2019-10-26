@@ -7,6 +7,9 @@ using System.Web;
 
 namespace Evention2.Models
 {
+    /**
+     * Model using in posting a review.
+     */
     public class RateCreateViewModel
     {
         public int Event_id { get; set; }
@@ -17,6 +20,9 @@ namespace Evention2.Models
         [StringLength(64)]
         public string Comments { get; set; }
 
+        /**
+         * Overriden of ToString
+         */
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
@@ -26,6 +32,9 @@ namespace Evention2.Models
             return builder.ToString();
         }
 
+        /**
+         * Convert to Rate.
+         */
         public Rate ToRate()
         {
             Rate rate = new Rate();

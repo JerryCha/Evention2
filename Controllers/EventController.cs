@@ -22,9 +22,11 @@ namespace Evention2.Controllers
     public class EventController : Controller
     {
         private Entity db = new Entity();
-        private static PosterManagementService posterTempStorage = PosterManagementService.GetInstance();
 
         // GET: Event
+        /**
+         * Get the list of events
+         */
         public ActionResult Index()
         {
             
@@ -32,8 +34,12 @@ namespace Evention2.Controllers
         }
 
         // GET: Event/Details/5
+        /**
+         * Get an event detailed information by event id.
+         */
         public ActionResult Details(int? id)
         {
+            // Check id
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -46,7 +52,7 @@ namespace Evention2.Controllers
                 return HttpNotFound();
             }
             aEvent.PosterImg = aEvent.PosterImg == "" ? 
-                "/Content/img/70634057gy1fw7seyf81mj20bx0blwex.jpg" : "/Content/poster/" + aEvent.PosterImg;
+                "/Content/img/placeholder.jpg" : "/Content/poster/" + aEvent.PosterImg;
 
             // Retrieve corresponding rates.
             JoinedViewModel viewModel = new JoinedViewModel();
@@ -64,7 +70,11 @@ namespace Evention2.Controllers
                 avgScore /= eventRates.Count();
                 ViewBag.AvgScore = String.Format("{0:0.0}", avgScore);
             }
-            EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates);
+            // Find ticketing information
+            List<Ticket> tickets = db.Ticket.Where(r => r.Event_Id == id).ToList();
+
+            // Constructing view model.
+            EventDetailViewModel @event = new EventDetailViewModel(aEvent, eventRates, tickets);
             // Apply a new thread to handle visit logging task.
             new Thread(() => {
                     EventVisitLogServices.LogVisit(@event.aEvent.EventId, 
@@ -74,23 +84,27 @@ namespace Evention2.Controllers
             return View(@event);
         }
 
-        // GET: Event/ShareEvent
-        // Reference: https://blog.csdn.net/gghh2015/article/details/79116718
+        // POST: Event/ShareEvent
+        /**
+         * Ajax call for sharing event by email.
+         * { eventId, shareEmailAddr }
+         */
         [Authorize]
         [HttpPost]
         public ActionResult ShareEvent()
         {
             string shareEmailAddr = Request.Form["emailAddr"];
 
-            // Email Regex may need to redesign.
+            // Email Regex.
             string emailRegex = @"^[a-z][a-z|0-9|]*([_][a-z|0-9]+)*([.][a-z|0-9]+([_][a-z|0-9]+)*)?@[a-z][a-z|0-9|]*\.([a-z][a-z|0-9]*(\.[a-z][a-z|0-9]*)?)$";
             if (new Regex(emailRegex, RegexOptions.IgnoreCase).IsMatch(shareEmailAddr))
             {
                 int eventId;
+                // Parse id from form.
                 bool idParseSucceed = Int32.TryParse(Request.Form["eventId"], out eventId);
                 if (idParseSucceed)
                 {
-                    Debug.WriteLine(shareEmailAddr, eventId);
+                    // Initialize email share helper
                     var shareHelper = new EmailServices();
                     shareHelper.ShareByEmail(shareEmailAddr, eventId);
 
@@ -98,11 +112,13 @@ namespace Evention2.Controllers
                     return Json("success");
                 }
 
+                // Bad request if event id is not an integer.
                 Response.StatusCode = 400;
                 return Json("event parse error");
             }
             else
             {
+                // Bad request if email does not match pattern.
                 Response.StatusCode = 400;
                 return Json("Email address does not match the pattern");
             }
@@ -112,6 +128,7 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Create()
         {
+            // Enumerate all event types and passing into ViewBag.
             List<Type> types = db.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
@@ -126,9 +143,12 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Create([Bind(Include = "EventType,EventId,EventName,EventDesc,Phone,Email,Start_date,End_date,Street,Surburb,State,PostCode,PosterImage")] EventCreateViewModel @event)
         {
+            // Enumerate all event types and passing into ViewBag.
             List<Type> types = db.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
+
+            // If no file is uploaded.
             if (Request.Files.Count == 0)
             {
                 return View(@event);
@@ -136,18 +156,26 @@ namespace Evention2.Controllers
 
             if (ModelState.IsValid)
             {
+                // Validate the date range.
                 if (@event.Start_date > DateTime.Now && @event.End_date < @event.Start_date)
                 {
                     return View(@event);
                 }
+                // Save the file.
                 var fileLoc = SavePoster(Request.Files[0]);
+                // Convert CreateEventViewModel to entity Event.
                 Event newEvent = @event.ToEvent();
+                // Get creater's id.
                 var userId = User.Identity.GetUserId();
+                // Assign to entity.
                 newEvent.OwnerId = userId;
+
+                // If uploaded failed, use empty string instead.
                 if (fileLoc.Result == null)
                     newEvent.PosterImg = "";
                 else
                     newEvent.PosterImg = fileLoc.Result;
+                // Save
                 db.Events.Add(newEvent);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Event");
@@ -156,21 +184,26 @@ namespace Evention2.Controllers
             return View(@event);
         }
 
-
+        // Poster file saving helper.
         private async Task<String> SavePoster(HttpPostedFileBase file)
         {
+            // if file is null or empty return null.
             if (file == null || file.ContentLength <= 0)
             {
                 return null;
             }
 
+            // Extract file extension.
             var fileExt = file.FileName.Split('.').Last().ToLower();
+            // If not picture extension.
             if (fileExt != "jpg" && fileExt != "png" && fileExt != "webp")
             {
                 return null;
             }
 
+            // Mapping save path.
             var path = Server.MapPath("~/Content/poster/");
+            // If not existed, create one.
             if (!Directory.Exists(path))
             {
                 try
@@ -182,6 +215,7 @@ namespace Evention2.Controllers
                     Debug.WriteLine(e.StackTrace.ToString());
                 }
             }
+            // File location.
             var fileLoc = path + Path.GetFileName(file.FileName);
             file.SaveAs(fileLoc);
 
@@ -192,22 +226,28 @@ namespace Evention2.Controllers
         [Authorize]
         public ActionResult Edit(int? id)
         {
+            // Initialize type selector.
             List<Type> types = db.Types.ToList();
             SelectList selectListItems = new SelectList(types, "TypeId", "TypeName");
             ViewBag.TypeList = selectListItems;
+            // If id is null
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            // If not login. (can be removed)
             if (User.Identity.IsAuthenticated == false)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
+            // Retrieve event
             Event @event = db.Events.Find(id);
+            // If not existed, return not found.
             if (@event == null)
             {
                 return HttpNotFound();
             }
+            // If identity is not the owner or not administrator.
             if (User.Identity.GetUserId() != @event.OwnerId && !User.IsInRole("Administrator"))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden);

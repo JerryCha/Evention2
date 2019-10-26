@@ -23,6 +23,9 @@ namespace Evention2.Models
         [StringLength(64)]
         public string Comments { get; set; }
 
+        /**
+         * Overriden of ToString
+         */
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();

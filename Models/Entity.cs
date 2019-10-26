@@ -12,11 +12,13 @@ namespace Evention2.Models
             : base("name=DefaultConnection")
         {
         }
-
+        
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<Type> Types { get; set; }
         public virtual DbSet<EventVisitLog> EventVisitLogs { get; set; }
+        public virtual DbSet<Order> Order { get; set; }
+        public virtual DbSet<Ticket> Ticket { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

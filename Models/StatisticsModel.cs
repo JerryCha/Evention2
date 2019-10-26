@@ -6,6 +6,9 @@ namespace Evention2.Models
     using System.Linq;
     using System.ComponentModel.DataAnnotations;
 
+    /**
+     * Visitor statistics model.
+     */
     public partial class StatisticsModel
     {
 

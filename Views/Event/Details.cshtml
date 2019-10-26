@@ -20,7 +20,7 @@
     </nav>
 </div>
 
-<div class="row justify-content-between">
+<div class="row justify-content-between align-items-end">
     <div class="col-md-10">
         <h2>@Html.DisplayFor(model => model.aEvent.EventName)</h2>
     </div>
@@ -28,7 +28,10 @@
         @if (User.Identity.GetUserId() == Model.aEvent.OwnerId)
         {
             <p>
-                @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId }, new { @class = "btn btn-outline-primary" })
+                @Html.ActionLink("Edit", "Edit", new { id = Model.aEvent.EventId }, new { @class = "d-inline btn btn-outline-primary" })
+            </p>
+            <p>
+                @Html.ActionLink("Ticket Manage", "Detail", "Ticket", new { id=Model.aEvent.EventId}, new { @class = "d-inline btn btn-info"})
             </p>
         }
     </div>
@@ -108,22 +111,42 @@
         </div>
     </div>
 </div>
-
+@if (User.Identity.IsAuthenticated)
+{
 <div class="row">
-    <!--<p>@Html.ActionLink("Send to my email", "ShareEvent", "Event", new { id = User.Identity.GetUserId() }, null)</p>-->
     <p data-target="#eventShareModal" data-toggle="modal"><a href="#">Share by email</a></p>
 </div>
+}
+<div class="row">
+    <h2>Ticketing Information</h2>
+</div>
+@if (Model.tickets == null || Model.tickets.Count == 0)
+{
+    <div class="row">
+        <div class="alert alert-light">No ticketing information available to this event.</div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @for (var i = 0; i < Model.tickets.Count; i++)
+        {
+            <div class="col mx-2 py-2 border">
+                <h4>@Model.tickets[i].Sku_Name</h4>
+                <p>@Model.tickets[i].Sku_Desc</p>
+                <p>AU$@Model.tickets[i].Price</p>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <p>Have decided to join? <a href="@Url.Action("Buy","Ticket")/@Model.aEvent.EventId"> Click here to ticket purchase page.</a></p>
+    </div>
+}
+
+
 <h2>Location Map</h2>
 <div class="row">
     <div id='map' style='width: 100%; height: 450px;'></div>
-    <!--
-    <div id="map-overlay" style="position: absolute; margin: 10px; padding: 5px; background-color: white;">
-        <h4>See also</h4>
-        <button id="transitLayerButton" class="btn btn-outline-dark"
-                onclick="setTransitPoints(token, m, addTransitPoints)">
-            Transit Station
-        </button>
-    </div>-->
     <script>
         function setMap(token, cord) {
             console.log("initialization cord: " + cord);
@@ -140,7 +163,7 @@
                 controls: { inputs: true },
                 //placeholderDeatination: "@address"
             });
-            
+
             map.on('load', () => {
                 md.setDestination("@address");
                 map.loadImage('/Content/img/target_loc_128.png', (error, image) => {
@@ -178,8 +201,6 @@
                 map.removeLayer('points');
             });
             map.addControl(md, 'top-left');
-            mapd = md;
-            m = map;
         }
 
         function initMap(token, addr, mapReference) {
@@ -257,9 +278,8 @@
         }
 
         $(window).ready(() => {
+            m = {};
             token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
-            var m;  // Reference of map.
-            var mapd; // Reference of mapbox direction
             initMap(token, "@address", m);
         });
     </script>
@@ -268,5 +288,7 @@
     @Html.Partial("~/Views/Rate/_EventRates.cshtml", Model.eventRates, new ViewDataDictionary { { "eventId", Model.aEvent.EventId } })
 </div>
 
-
+@if (User.Identity.IsAuthenticated)
+{ 
 @Html.Partial("~/Views/Event/_Share.cshtml", Model.aEvent)
+}

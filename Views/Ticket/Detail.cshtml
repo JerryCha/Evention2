@@ -1,0 +1,167 @@
+﻿@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <script src="~/Scripts/vue.js"></script>
+
+<div id="app">
+    <div class="d-flex justify-content-between">
+        <h2>{{name}} Ticket Management</h2>
+        <p> <a class="btn btn-outline-info" href="/Event/Details/@ViewBag.event_id">Back to event page</a></p>
+    </div>
+    <div class="row border justify-content-between mx-auto my-2 py-2" v-for="ticket in tickets">
+        <div class="col-md-6" v-if="!ticket.isEditing">
+            <h4>{{ticket.Sku_Name}}</h4>
+            <p>{{ticket.Sku_Desc}}</p>
+        </div>
+        <div class="col-md-6" v-else-if="ticket.isEditing">
+            <label for="Sku_Name">Sku Name</label>
+            <input type="text" class="form-control" v-model="ticket.Sku_Name" />
+            <label for="Sku_Desc">Sku Description</label>
+            <input type="text" class="form-control" v-model="ticket.Sku_Desc" />
+        </div>
+
+        <div class="col-md-3" v-if="!ticket.isEditing">
+            <label for="Price">Price</label>
+            <p>AU$ {{ticket.Price}}</p>
+        </div>
+        <div class="col-md-3" v-else-if="ticket.isEditing">
+            <label for="Sku_Desc">Price</label>
+            <input type="number" class="form-control" v-model="ticket.Price" />
+        </div>
+
+        <div class="col-md-3" v-if="!ticket.isEditing">
+            <div class="input-group">
+                <button class="btn btn-primary mx-2" type="button" v-on:click="updateEditingState(ticket, true)">Edit</button>
+                <button class="btn btn-danger" type="button" v-on:click="deleteSku(ticket, $event)">Delete</button>
+            </div>
+        </div>
+        <div class="col-md-3" v-else-if="ticket.isEditing">
+            <button class="btn btn-primary mx-2" type="button" v-on:click="ticket.isNew?addSku(ticket, $event):updateSku(ticket, $event)">Done</button>
+            <button class="btn btn-outline-danger" type="button" v-on:click="ticket.isNew?cancelNew():updateEditingState(ticket, false)">Cancel</button>
+        </div>
+    </div>
+    <div class="row mx-auto">
+        <button class="btn btn-outline-secondary" v-on:click="insertNew()">New SKU</button>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            name: "",
+            tickets: []
+        },
+        methods: {
+            updateSku: function (vm, e) {
+                console.log(e);
+                console.log(vm);
+                e.target.disabled = true; 
+                $.ajax({
+                    type: "POST",
+                    url: "/Ticket/Edit",
+                    data: {
+                        "Sku_Id": vm.Sku_Id,
+                        "Sku_Name": vm.Sku_Name,
+                        "Sku_Desc": vm.Sku_Desc,
+                        "Event_Id": vm.Event_Id,
+                        "Price": parseFloat(vm.Price)
+                    },
+                    success: (res, status, xhr) => {
+                        // TODO: Some logic
+                        this.updateEditingState(vm, false);
+                        alert("updated");
+                    },
+                    error: () => {
+
+                    }
+                });
+            },
+            updateEditingState: function (ticket, value) {
+                console.log("set " + ticket.Sku_Name + " editable to " + value);
+                ticket.isEditing = value;
+                this.$forceUpdate();
+            },
+            deleteSku: function (vm, e) {
+                console.log(vm);
+                console.log(e);
+                $.ajax({
+                    type: "POST",
+                    url: "/Ticket/Delete/" + vm.Sku_Id,
+                    data: {},
+                    success: (res, status, xhr) => {
+                        // TODO: Some logic
+                        this.data = res["tickets"]; // Server responds new sku lists.
+                        this.$forceUpdate();
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+            },
+            addSku: function (vm, e) {
+                e.target.innerHtml = "Processing";
+                e.target.disabled = true;
+                $.ajax({
+                    type: "POST",
+                    url: "/Ticket/Create",
+                    data: {
+                        "Sku_Id": vm.Sku_Id,
+                        "Sku_Name": vm.Sku_Name,
+                        "Sku_Desc": vm.Sku_Desc,
+                        "Event_Id": vm.Event_Id,
+                        "Price": parseFloat(vm.Price)
+                    },
+                    success: (res, status, xhr) => {
+                        // TODO: Some logic
+                        console.log(res);
+                        this.tickets[this.tickets.length - 1] = res;
+                        this.updateEditingState(vm, false);
+                        alert("added");
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+                this.updateEditingState(vm, false);
+            },
+            insertNew: function () {
+                this.tickets.push({
+                    "Sku_Id": 0,
+                    "Sku_Name": "",
+                    "Sku_Desc": "",
+                    "Event_Id": 0,
+                    "Price": 0.0,
+                    "Event_Id": @ViewBag.event_id,
+                    "isEditing": true,
+                    "isNew": true
+                });
+            },
+            cancelNew: function() {
+                this.tickets.pop();
+            }
+        },
+        beforeCreate: function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Ticket/Get/@ViewBag.event_id",
+                    data: {},
+                    success: (res, status, xhr) => {
+                        // status === "success"
+                        //console.log("response:" + res["name"] + ", " + res["tickets"]);
+                        this.name = res["name"];
+                        this.tickets = res["tickets"];
+                        this.tickets.forEach(ticket => {
+                            ticket["state"] = false;
+                            ticket["isNew"] = false;
+                        })
+                }
+            })
+        }
+    });
+</script>
