@@ -31,22 +31,31 @@ namespace Evention2.Models
         [Required]
         public string EventDesc { get; set; }
 
+        [Required]
         public string Phone { get; set; }
 
+        [Required]
         public string Email { get; set; }
 
+        [Required]
         public DateTime Start_date { get; set; }
 
+        [Required]
         public DateTime End_date { get; set; }
 
+        [Required]
         public int EventType { get; set; }
 
+        [Required]
         public string Street { get; set; }
 
+        [Required]
         public string Surburb { get; set; }
 
+        [Required]
         public string State { get; set; }
 
+        [Required]
         public string PostCode { get; set; }
 
         public Event ToEvent()

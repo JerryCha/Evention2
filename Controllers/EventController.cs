@@ -216,10 +216,11 @@ namespace Evention2.Controllers
                 }
             }
             // File location.
-            var fileLoc = path + Path.GetFileName(file.FileName);
+            var fileName = HashDigestServices.GetMD5(new BinaryReader(file.InputStream).ReadBytes(file.ContentLength)) + "." + fileExt;
+            var fileLoc = path + fileName;
             file.SaveAs(fileLoc);
 
-            return file.FileName;
+            return fileName;
         }
 
         // GET: Event/Edit/5

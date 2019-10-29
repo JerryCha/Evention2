@@ -194,13 +194,24 @@ else
                     });
                 });
             });
+            
             md.on('origin', () => {
                 $.get({
-                    url: "https://api.mapbox.com/geocoding/v5/mapbox.places/" + md.getOrigin()["geometry"]["coornidates"]
-                })
+                    url: "https://api.mapbox.com/geocoding/v5/mapbox.places/" + md.getOrigin()["geometry"]["coordinates"].join() + ".json",
+                    data: {
+                        "access_token": token,
+                        "limit": 1
+                    },
+                    success: (res, status, xhr) => {
+                        if (res["features"].length !== 0) {
+                            
+                        }
+                    }
+                });
                 map.removeLayer('points');
             });
             map.addControl(md, 'top-left');
+            mm = md;
         }
 
         function initMap(token, addr, mapReference) {
@@ -216,7 +227,10 @@ else
                 },
                 success: (res, status, xhr) => {
                     console.log(res);
-                    cord = res["features"][0]["center"];
+                    if (res["features"].length === 0)
+                        cord = [139.6663728, 35.6654837];
+                    else
+                        cord = res["features"][0]["center"];
                     console.log(cord);
                     setMap(token, cord, mapReference);
                 },
@@ -279,6 +293,7 @@ else
 
         $(window).ready(() => {
             m = {};
+            mm = {};
             token = 'pk.eyJ1IjoiamVycnljaGEiLCJhIjoiY2sxNXNldmdmMHlibjNjdGM4MnAyZHR4aCJ9.OjElwhEEogXkUfGOgpX3mA';
             initMap(token, "@address", m);
         });

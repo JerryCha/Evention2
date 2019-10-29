@@ -23,12 +23,13 @@ namespace Evention2.Models
         [Required]
         public string EventDesc { get; set; }
 
+        [Required]
         public string Phone { get; set; }
-
+        [Required]
         public string Email { get; set; }
-
+        [Required]
         public DateTime Start_date { get; set; }
-
+        [Required]
         public DateTime End_date { get; set; }
 
         [Required]
